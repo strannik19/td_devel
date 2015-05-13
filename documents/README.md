@@ -1,4 +1,4 @@
-Table_Definition.xslm
+Table_Definition.xlsm
 =====================
 Excel document with macros to generate Teradata DDLs (create table, create view, ...)
 
