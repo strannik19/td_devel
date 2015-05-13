@@ -1,5 +1,5 @@
-PDM_Definition.xslm
-===================
+Table_Definition.xslm
+=====================
 Excel document with macros to generate Teradata DDLs (create table, create view, ...)
 
 Usual usage:
@@ -10,6 +10,7 @@ Usual usage:
 * leverage the power of Excel with mass operations
 * adjust Parameters in sheet "parameter"
 * caution: the reserved words in sheet "reserved words" will be out of date. Get the latest from your database first.
+Basically, all words will be treated as "reserved word" in sheet "coldata".
 * generate a 1:1 staging layer in Teradata
 
 The initial intention was, that the customer delivered table and column description for a migration project in Excel as
