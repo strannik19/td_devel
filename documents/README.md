@@ -27,5 +27,5 @@ select * from all_tab_columns where owner = 'BLABLA';
 
 If you have access to the desired Oracle database, you can use the script "/oracle/read_dd4Table_Definition.sql" to unload the data in that required format, just for copy and paste.
 
-If you wonder, why the "NOT NULL" information is stored in the other way around databases does: "Required?"? It was designed, to have an easy unload from Erwin (Databrowser) as well.
+If you wonder, why the "NOT NULL" information is stored in the other way around databases usually do: "Required?"? It was designed, to have an easy unload from Erwin (Databrowser) as well.
 Now, you can see, that this document was initially created while Erwin 7.3 was actual.
