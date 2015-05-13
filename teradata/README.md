@@ -48,13 +48,13 @@ SQL to retrieve column information in format to import it to Teradata Mapping Ma
 
 Mapping Manager does not import it! And I don't know why. Grrr
 
-read_dd4Datamodelling.sql
-=========================
+read_dd4Table_Definition.sql
+============================
 A while ago, I've created an Excel Document, to generate Teradata DDLs for the creation of tables and views.
 The initial intention was the ability to turn an Oracle table to a Teradata table.
 By unloading the Oracle Datadictionary to two Excel sheets (Table Info, Column Info).
 This SQL generates the data for the Excel from Teradata Dictionary.
-Find the Excel document in "/documents/PDM Definition.xlsm".
+Find the Excel document in "/documents/Table_Definition.xlsm".
 
 show_skew_factor.sql
 ====================
