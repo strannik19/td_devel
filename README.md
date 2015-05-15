@@ -2,11 +2,7 @@ documents
 =========
 Stuff what is necessarily not a source code. Eg. Word or Excel documents.
 
-td_devel
-========
-Helpful stuff for Teradata Developers
-
-ETL
+ELT
 ===
 The idea is, to have an empty (new) TMS for ETL purposes.
 
