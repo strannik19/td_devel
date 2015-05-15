@@ -27,7 +27,7 @@ Analyze simple csv file delimitted by pipe (|) and show some statistics per colu
 
 housekeeping.sh
 ===============
-Simple bash script where a folder can be specified to free space, after a certain space is available.
+Simple bash script where a folder can be specified to free space, until a certain amount of space is available again.
 
 sbitwrapper.c
 =============
