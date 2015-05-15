@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #
-# remove all files in HOUSEKEEPINGDIR which are bigger than 1 TB and older than 3 days
+# remove all gz files in CLEANUPDIR until a certain space is freed up again
 # Only one folder possible because multiple folder will unevenly remove files
 #    -> One folder get more files removed than the other
 #
 
-HOUSEKEEPINGDIR="/srv/nfs4/drive1"
+CLEANUPDIR="/srv/nfs4/drive1"
 
 myDATE=$(date +"%Y%m%d-%H%M%S")
 myself1=${0##*/}
@@ -17,27 +17,27 @@ logsdir="/root/logs"
 # Specify how many versions of own logfiles should be kept
 keepownlogs=10
 
-# Define how many kilobytes must be available
+# Define how many kilobytes must be available on the filesystem
 minleft=5000000000
 
-if [ ! -d ${HOUSEKEEPINGDIR} ]
+if [ ! -d ${CLEANUPDIR} ]
 then
-	echo "Folder ${HOUSEKEEPINGDIR} not found!"
-	echo "Folder ${HOUSEKEEPINGDIR} not found!" >&2
+	echo "Folder ${CLEANUPDIR} not found!"
+	echo "Folder ${CLEANUPDIR} not found!" >&2
 	exit 1
 fi
 
 {
 
-	cd ${HOUSEKEEPINGDIR}
+	cd ${CLEANUPDIR}
 
-	mountpoint ${HOUSEKEEPINGDIR} >/dev/null 2>&1
+	mountpoint ${CLEANUPDIR} >/dev/null 2>&1
 	if [ $? -eq 0 ]
 	then
-		left=$(df | grep ${HOUSEKEEPINGDIR} | awk '{print $4}')
-		mountp=${HOUSEKEEPINGDIR}
+		left=$(df | grep ${CLEANUPDIR} | awk '{print $4}')
+		mountp=${CLEANUPDIR}
 	else
-		mountp=${HOUSEKEEPINGDIR}
+		mountp=${CLEANUPDIR}
 		while true
 		do
 			mountp1=${mountp%/*}
@@ -55,10 +55,10 @@ fi
 	if [ $left -lt $minleft ]
 	then
 
-		echo "Space before housekeeping:"
+		echo "Space before cleanup:"
 		df ${mountp}
 
-		echo -e "\nContent of folder ${HOUSEKEEPINGDIR} before housekeeping:"
+		echo -e "\nContent of folder ${CLEANUPDIR} before cleanup:"
 		ls -l
 
 		echo -e "\nDeleting file(s):"
@@ -75,14 +75,14 @@ fi
 			fi
 		done
 
-		echo -e "\nContent of folder ${HOUSEKEEPINGDIR} after housekeeping:"
+		echo -e "\nContent of folder ${CLEANUPDIR} after cleanup:"
 		ls -l
 
-		echo -e "\nSpace after housekeeping:"
+		echo -e "\nSpace after cleanup:"
 	else
-		echo "No housekeeping required!!"
+		echo "No cleanup required!!"
 
-		echo -e "\nContent of folder ${HOUSEKEEPINGDIR}:"
+		echo -e "\nContent of folder ${CLEANUPDIR}:"
 		ls -l
 
 		echo -e "\nSpace:"
@@ -91,7 +91,7 @@ fi
 	df ${mountp}
 
 	#
-	# Housekeeping of log files
+	# Cleanup of log files
 	#
 	cd ${logsdir}
 

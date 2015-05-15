@@ -9,6 +9,10 @@ It requires some perl modules for reading CSV files. As well as some initial kno
 
 This is a very rough tool. The csvkit from onyxfish on github.com can do way more.
 
+cleanup.sh
+===============
+Simple bash script where a folder can be specified to free up space, until a certain amount is available again.
+
 count.pl
 ========
 It reads a file and groups every line and counts the number of occurrences of that line.
@@ -24,10 +28,6 @@ order by COMPLETE_ROW_FROM_FILE;
 csv_check.pl
 ============
 Analyze simple csv file delimitted by pipe (|) and show some statistics per column.
-
-housekeeping.sh
-===============
-Simple bash script where a folder can be specified to free space, until a certain amount of space is available again.
 
 sbitwrapper.c
 =============
