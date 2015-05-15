@@ -1,3 +1,7 @@
+archive.sh
+==========
+Simple bash script where folders can be specified to compress files.
+
 analyze_datafile.pl
 ===================
 Provided is a delimited flat file. This tool analysis the flat file, a proposes the best possible data format for each column, based on the content.
@@ -20,6 +24,10 @@ order by COMPLETE_ROW_FROM_FILE;
 csv_check.pl
 ============
 Analyze simple csv file delimitted by pipe (|) and show some statistics per column.
+
+housekeeping.sh
+===============
+Simple bash script where a folder can be specified to free space, after a certain space is available.
 
 sbitwrapper.c
 =============
