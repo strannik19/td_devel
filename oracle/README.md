@@ -32,6 +32,9 @@ ora_test.py
 ===========
 Sample Python script to connect to Oracle databases.
 
+Nice introduction: http://www.oracle.com/technetwork/articles/dsl/prez-python-queries-101587.html
+
+
 read_dd4Table_Definition.sql
 ============================
 A while ago, I've created an Excel Document, to generate Teradata DDLs for the creation of tables and views.
