@@ -28,6 +28,10 @@ A fastload script for Teradata will also be generated.
 Does some manipulation of the data, to get it easily unloaded and loaded.
 Is limited to line length. But has no other software requirements besides SQL*Plus.
 
+ora_test.py
+===========
+Sample Python script to connect to Oracle databases.
+
 read_dd4Table_Definition.sql
 ============================
 A while ago, I've created an Excel Document, to generate Teradata DDLs for the creation of tables and views.
