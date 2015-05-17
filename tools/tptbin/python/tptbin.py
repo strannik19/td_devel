@@ -16,7 +16,40 @@
 # to the copyright holder.
 #
 
-def determinenumcolumns(record, indicator):
+import struct
+import sys
+
+def numcolumns(filename, record, indicator):
     recordlen = len(record)
-    
-    return (0)
+    columns = 0
+
+    if indicator == 1:
+        # data has indicator
+        pass
+
+    elif indicator == 2:
+        # data has no indicator
+        pos = 0
+
+        while pos < recordlen:
+            # still not at the end of the record
+            columnsize = struct.unpack('H', record[pos:pos + 2])
+            pos += 2
+
+            column = record[pos:columnsize]
+
+            if (len(column) == columnsize):
+                # column is as long as expected
+                columns += 1
+                pos += columnsize
+            elif len(column) > 0 and columnsize > 0:
+                # error (columnsize bigger zero but not as big as expected)
+                sys.stderr.write("File: {0}: Error in column {1}!", filename, columns)
+            else:
+                break
+
+    else:
+        # no indicator information given (indicator is unknown)
+        pass
+
+    return (columns)

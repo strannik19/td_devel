@@ -21,7 +21,7 @@ import sys
 import tptbin
 
 if len(sys.argv) == 1:
-    print "Missing file name(s)"
+    sys.stderr.write("Filename(s) missing in command argument")
     sys.exit(1)
 
 for filename in sys.argv[1:]:
@@ -29,8 +29,10 @@ for filename in sys.argv[1:]:
     try:
         f = open(filename, "rb")
     except IOError as e:
-        print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        sys.stderr.write("File: {0}: I/O error({1}): {2}", filename, e.errno, e.strerror)
         break
+
+    record = 0
 
     while True:
         try:
@@ -39,10 +41,16 @@ for filename in sys.argv[1:]:
             break
     
         if len(a) == 2:
-            linesize = struct.unpack('H', a)[0]
+            recordlen = struct.unpack('H', a)[0]
         else:
             break
 
-        completerecord = f.read(linesize)
+        completerecord = f.read(recordlen)
+        if (len(completerecord) == recordlen):
+            # read as much byte from file as recordlen in file defined
+            numcolumns = tptbin.numcolumns(filename, completerecord, indicator)
+        else:
+            sys.stderr.write("File: {0}: Record: {1}: Error in len!", filename, record)
+            break
 
     f.close()
