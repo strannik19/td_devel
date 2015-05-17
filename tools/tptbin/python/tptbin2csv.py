@@ -33,6 +33,7 @@ for filename in sys.argv[1:]:
         break
 
     record = 0
+    indicator = 2
 
     while True:
         try:
@@ -52,5 +53,7 @@ for filename in sys.argv[1:]:
         else:
             sys.stderr.write("File: {0}: Record: {1}: Error in len!", filename, record)
             break
+
+        print numcolumns
 
     f.close()

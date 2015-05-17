@@ -33,10 +33,11 @@ def numcolumns(filename, record, indicator):
 
         while pos < recordlen:
             # still not at the end of the record
-            columnsize = struct.unpack('H', record[pos:pos + 2])
+            columnsize = struct.unpack('H', record[pos:pos + 2])[0]
+
             pos += 2
 
-            column = record[pos:columnsize]
+            column = record[pos:pos + columnsize]
 
             if (len(column) == columnsize):
                 # column is as long as expected
