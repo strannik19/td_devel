@@ -13,7 +13,7 @@
 # THIS SOFTWARE.
 #
 # It is appreciated, if any changes to the source code are reported
-# to the copyright holder.
+# to the creator of this software.
 #
 
 import struct
@@ -46,10 +46,11 @@ for filename in sys.argv[1:]:
         else:
             break
 
-        rowcounter += 1
-        totalrowcount += 1
-
-        completerecord = f.read(linesize)
+        if lineszie > 0:
+            rowcounter += 1
+            totalrowcount += 1
+    
+            completerecord = f.read(linesize)
 
     if len(sys.argv) > 2:
         print rowcounter, filename

@@ -13,7 +13,7 @@
 # THIS SOFTWARE.
 #
 # It is appreciated, if any changes to the source code are reported
-# to the copyright holder.
+# to the creator of this software.
 #
 
 import struct

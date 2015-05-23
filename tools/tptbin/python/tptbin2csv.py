@@ -13,7 +13,7 @@
 # THIS SOFTWARE.
 #
 # It is appreciated, if any changes to the source code are reported
-# to the copyright holder.
+# to the creator of this software.
 #
 
 import struct
@@ -46,13 +46,14 @@ for filename in sys.argv[1:]:
         else:
             break
 
-        completerecord = f.read(recordlen)
-        if (len(completerecord) == recordlen):
-            # read as much byte from file as recordlen in file defined
-            numcolumns = tptbin.numcolumns(filename, completerecord, indicator)
-        else:
-            sys.stderr.write("File: {0}: Record: {1}: Error in len!", filename, record)
-            break
+        if recordlen > 0:
+            completerecord = f.read(recordlen)
+            if (len(completerecord) == recordlen):
+                # read as much byte from file as recordlen in file defined
+                numcolumns = tptbin.numcolumns(filename, completerecord, indicator)
+            else:
+                sys.stderr.write("File: {0}: Record: {1}: Error in len!", filename, record)
+                break
 
         print numcolumns
 
