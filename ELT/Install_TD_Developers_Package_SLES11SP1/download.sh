@@ -15,7 +15,7 @@ for DL in \
 	https://cpan.metacpan.org/authors/id/B/BI/BINGOS/ExtUtils-MakeMaker-7.04.tar.gz \
 	https://www.kernel.org/pub/software/scm/git/git-2.4.1.tar.gz \
 	https://www.openssl.org/source/openssl-1.0.2a.tar.gz \
-	http://prdownloads.sourceforge.net/scons/scons-2.3.4.tar.gz \
+	http://prdownloads.sourceforge.net/scons/scons-local-2.3.4.tar.gz \
 	http://serf.googlecode.com/svn/src_releases/serf-1.3.8.tar.bz2 \
 	http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
 	http://mirror.synyx.de/apache/subversion/subversion-1.8.13.tar.bz2 \
