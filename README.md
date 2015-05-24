@@ -7,8 +7,8 @@ ELT
 The idea is, to have an empty (new) TMS for ELT purposes.
 
 With those two containing packages, you will get
-* git (version 2.2.1)
-* subversion (version 1.8.11)
+* git (version 2.4.1)
+* subversion (version 1.8.13)
 * SLJM (version 2.12)
 * GCFR (ETL part) (version 1.1.1 including patch 20140703)
 
