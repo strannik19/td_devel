@@ -3,7 +3,7 @@ Idea
 The idea is, to have an empty (new) TMS for ETL purposes.
 With those two packages, you will get
 
-* git (version 2.4.1)
+* git (version 2.4.2)
 * subversion (version 1.8.13)
 * SLJM (version 2.12)
 * GCFR (ETL part) (version 1.1.1 including patch 20140703)
@@ -31,7 +31,7 @@ Install_TD_Developers_Package_SLES11SP1
 =======================================
 The main goal for this package is the installation of this packages:
 
-* git (version 2.4.1)
+* git (version 2.4.2)
 * subversion (version 1.8.13)
 
 Also, there are some packages included, which are required by SLJM or GCFR!
@@ -60,7 +60,7 @@ The following packages are available to download for free:
 * sqlite-amalgamation-3080801.zip (http://www.sqlite.org/download.html)
 * Test-Simple-1.001006.tar.gz (http://search.cpan.org/dist/Test-Simple/lib/Test/Builder.pm)
 * subversion-1.8.13.tar.bz2 (https://subversion.apache.org/download/)
-* git-2.4.1.tar.gz (https://www.kernel.org/pub/software/scm/git/)
+* git-2.4.2.tar.gz (https://www.kernel.org/pub/software/scm/git/)
 
 The script "download.sh" will download exactly those versions for you. You will just need to get the
 official RPMs from Novell (or some other trusted source).
