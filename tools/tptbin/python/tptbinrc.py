@@ -18,6 +18,7 @@
 
 import struct
 import sys
+import tptbin
 
 if len(sys.argv) == 1:
     print "Missing file name(s)"
@@ -36,21 +37,15 @@ for filename in sys.argv[1:]:
     rowcounter = 0
 
     while True:
-        try:
-            a = f.read(2)
-        except:
-            break
-    
-        if len(a) == 2:
-            linesize = struct.unpack('H', a)[0]
-        else:
-            break
+        rowlen = tptbin.readrowlen(f)
 
-        if lineszie > 0:
+        if rowlen > 0:
             rowcounter += 1
             totalrowcount += 1
     
-            completerecord = f.read(linesize)
+            completerecord = f.read(rowlen)
+        else:
+            break
 
     if len(sys.argv) > 2:
         print rowcounter, filename
