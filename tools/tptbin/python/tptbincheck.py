@@ -19,6 +19,7 @@
 import struct
 import sys
 import tptbin
+import argparse
 
 if len(sys.argv) == 1:
     sys.stderr.write("Filename(s) missing in command argument")
@@ -34,27 +35,32 @@ for filename in sys.argv[1:]:
 
     record = 0
     indicator = 2
+    oldnumcolumns = 0;
+    numrow = 0;
+    oldnumrow = 1;
 
     while True:
-        try:
-            a = f.read(2)
-        except:
-            break
+        rowlen = tptbin.readrowlen(f)
     
-        if len(a) == 2:
-            recordlen = struct.unpack('H', a)[0]
-        else:
-            break
-
-        if recordlen > 0:
-            completerecord = f.read(recordlen)
-            if (len(completerecord) == recordlen):
+        if rowlen > 0:
+            completerecord = tptbin.readrow(f, rowlen)
+            if (completerecord != False):
                 # read as much byte from file as recordlen in file defined
                 numcolumns = tptbin.numcolumns(filename, completerecord, indicator)
             else:
-                sys.stderr.write("File: {0}: Record: {1}: Error in len!", filename, record)
                 break
+        else:
+            break
 
-        print numcolumns
+        if numrow == 0:
+            oldnumcolumns = numcolumns
+
+        numrow += 1
+
+        if oldnumcolumns != numcolumns and numrow > 0:
+            sys.stdout.write ("{0} .. {1}: {2}", oldnumrow, numrow - 1, oldnumcolumns)
+            oldnumrow = numrow
+
+    print "{0} - {1}: {2}".format(oldnumrow, numrow, oldnumcolumns)
 
     f.close()

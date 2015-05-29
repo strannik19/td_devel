@@ -19,6 +19,30 @@
 import struct
 import sys
 
+def readrowlen(f):
+     try:
+         a = f.read(2)
+     except:
+         return (-1)
+ 
+     if len(a) == 2:
+         rowlen = struct.unpack('H', a)[0]
+     else:
+         return (-1)
+
+     return (rowlen)
+
+
+def readrow(f, rowlen):
+    completerecord = f.read(rowlen)
+
+    if (len(completerecord) != rowlen):
+        sys.stderr.write("File: {0}: Record: {1}: Error in len!", filename, record)
+        return (False)
+
+    return (completerecord)
+
+
 def numcolumns(filename, record, indicator):
     recordlen = len(record)
     columns = 0
