@@ -38,7 +38,8 @@ def readrow(f, rowlen, numrow):
     completerow = f.read(rowlen)
 
     if (len(completerow) != rowlen):
-        logging.warning("File: %s: Record: %d: Error in len!", filename, numrow)
+        logging.warning("File: %s: Record: %d: Error in len!",
+                        filename, numrow)
         return (False)
 
     return (completerow)
@@ -70,12 +71,15 @@ def numcolumns(filename, record, indicator, rownum):
                 pos += columnsize
             elif len(column) > 0 and columnsize > 0:
                 # error (columnsize bigger zero but not as big as expected)
-                logging.warning("File: %s: Error in row %d, column %d!", filename, rownum, columns)
+                logging.warning("File: %s: Error in row %d, column %d. "
+                                "Found %d bytes instead of %d!", filename,
+                                rownum, columns, len(column), columnsize)
             else:
                 break
 
     else:
         # no indicator information given (indicator is unknown)
+        # trying to find out
         pass
 
     return (columns)
