@@ -31,7 +31,7 @@ group.add_argument("-i", help="data file(s) have indicator bits",
 group.add_argument("-ni", help="data file(s) have no indicator bits",
                     action="store_true")
 parser.add_argument("-q", "--quick", help="Quickscan (check only first record per file)",
-                    action="store_true")
+                    action="count")
 parser.add_argument("FILE", help="File in tptbin format", nargs="+")
 args = parser.parse_args()
 
@@ -81,7 +81,9 @@ for filename in args.FILE:
                                                 oldnumcolumns)
             oldnumrow = numrow
 
-        if args.quick == True:
+        if args.quick == 1:
+            break
+        elif 10 ** args.quick == numrow:
             break
 
     print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow,
