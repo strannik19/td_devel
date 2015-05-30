@@ -22,19 +22,34 @@ import tptbin
 import logging
 import argparse
 
-if len(sys.argv) == 1:
-    logging.error("Filename(s) missing in command argument")
-    sys.exit(1)
+parser = argparse.ArgumentParser()
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-i", help="data file(s) have indicator bits",
+                    action="store_true")
+group.add_argument("-ni", help="data file(s) have no indicator bits",
+                    action="store_true")
+parser.add_argument("FILE", help="File in tptbin format", nargs="+")
+args = parser.parse_args()
 
-for filename in sys.argv[1:]:
+if args.ni == True:
+    # we know, there are no indicator bits in the data
+    indicator = 2
+elif args.i == True:
+    # we know, there are indicator bits in the data
+    indicator = 1
+else:
+    # we don't know if there are or there are no indicator bits in the data
+    indicator = 0
+
+for filename in args.FILE:
 
     try:
         f = open(filename, "rb")
     except IOError as e:
-        logging.warning("File: %s: I/O error(%d): %s", filename, e.errno, e.strerror)
+        logging.warning("File: %s: I/O error(%d): %s", filename, e.errno,
+                        e.strerror)
         break
 
-    indicator = 2
     oldnumcolumns = 0
     numrow = 0
     oldnumrow = 1
@@ -48,7 +63,8 @@ for filename in sys.argv[1:]:
             completerecord = tptbin.readrow(f, rowlen, numrow)
             if (completerecord != False):
                 # read as much byte from file as recordlen in file defined
-                numcolumns = tptbin.numcolumns(filename, completerecord, indicator, numrow)
+                numcolumns = tptbin.numcolumns(filename, completerecord,
+                                               indicator, numrow)
             else:
                 break
         else:
@@ -58,9 +74,11 @@ for filename in sys.argv[1:]:
             oldnumcolumns = numcolumns
 
         if oldnumcolumns != numcolumns and numrow > 1:
-            print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow, oldnumcolumns)
+            print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow,
+                                                oldnumcolumns)
             oldnumrow = numrow
 
-    print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow, oldnumcolumns)
+    print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow,
+                                        oldnumcolumns)
 
     f.close()
