@@ -22,11 +22,15 @@ import tptbin
 import logging
 import argparse
 
+#logging.basicConfig(level=logging.DEBUG)
+
 parser = argparse.ArgumentParser()
 group = parser.add_mutually_exclusive_group()
 group.add_argument("-i", help="data file(s) have indicator bits",
                     action="store_true")
 group.add_argument("-ni", help="data file(s) have no indicator bits",
+                    action="store_true")
+parser.add_argument("-q", "--quick", help="Quickscan (check only first record per file)",
                     action="store_true")
 parser.add_argument("FILE", help="File in tptbin format", nargs="+")
 args = parser.parse_args()
@@ -63,7 +67,7 @@ for filename in args.FILE:
             completerecord = tptbin.readrow(f, rowlen, numrow)
             if completerecord != False:
                 numcolumns = tptbin.numcolumns(filename, completerecord,
-                                               indicator, numrow)
+                                               indicator, numrow, 0)
             else:
                 break
         else:
@@ -76,6 +80,9 @@ for filename in args.FILE:
             print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow,
                                                 oldnumcolumns)
             oldnumrow = numrow
+
+        if args.quick == True:
+            break
 
     print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow,
                                         oldnumcolumns)

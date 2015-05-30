@@ -49,12 +49,12 @@ def checkindicatorifcolumnisnull (indicators, pos):
      return indicators & 2**pos != 0
 
 
-def numcolumns (filename, record, indicator, rownum):
+def numcolumns (filename, record, indicator, rownum, source):
      recordlen = len(record)
      columns = 0
-
+          
      if indicator == 1:
-          # data has indicator (at least one .. so start at position 1)
+          # data has indicator (at least one ... start with second position)
           indicatorpos = 1
 
           while True:
@@ -140,23 +140,33 @@ def numcolumns (filename, record, indicator, rownum):
 
                pos += 2
 
-               column = record[pos:pos + columnsize]
-
-               if (len(column) == columnsize):
-                    # column is as long as expected
+               if pos + columnsize < recordlen:
+                    # column is as long as expected (last column)
                     columns += 1
                     pos += columnsize
-               elif len(column) > 0 and columnsize > 0:
+               elif pos + columnsize > recordlen:
                     # error (columnsize bigger zero but not as big as expected)
-                    logging.warning("File: %s: Error in row %d, column %d. "
-                                    "Found %d bytes instead of %d!", filename,
-                                    rownum, columns, len(column), columnsize)
+                    columns = -1
+                    if source == 0:
+                         logging.warning("File: %s, Error in row %d, "
+                                         "column %d. Found %d bytes "
+                                         "instead of %d!", filename, rownum,
+                                         columns, len(column), columnsize)
+                    break
                else:
+                    # sum of columns equals expected record length
+                    columns += 1
                     break
 
      else:
           # no indicator information given (indicator is unknown)
-          # trying to find out
-          pass
+          # trying first without indicator
+          columns = numcolumns (filename, record, 2, rownum, 1)
+          
+          if columns < 0:
+               # no result, try with indicator now
+               logging.debug("File: %s, Row %d, no indicator ... "
+                             "trying with indicator", filename, rownum)
+               columns = numcolumns (filename, record, 1, rownum, 1)
 
      return (columns)
