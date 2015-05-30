@@ -14,3 +14,7 @@ No Carriage Return or alike is required.
 # tptbinrc.py
 
 Rowcount of TPT binary files. Output is like from `wc -l`
+
+# tptbincheck.py
+
+Try to determine number of columns per row.

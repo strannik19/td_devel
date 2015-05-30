@@ -18,6 +18,7 @@
 
 import struct
 import sys
+import logging
 
 def readrowlen(f):
      try:
@@ -33,17 +34,17 @@ def readrowlen(f):
      return (rowlen)
 
 
-def readrow(f, rowlen):
-    completerecord = f.read(rowlen)
+def readrow(f, rowlen, numrow):
+    completerow = f.read(rowlen)
 
-    if (len(completerecord) != rowlen):
-        sys.stderr.write("File: {0}: Record: {1}: Error in len!", filename, record)
+    if (len(completerow) != rowlen):
+        logging.warning("File: %s: Record: %d: Error in len!", filename, numrow)
         return (False)
 
-    return (completerecord)
+    return (completerow)
 
 
-def numcolumns(filename, record, indicator):
+def numcolumns(filename, record, indicator, rownum):
     recordlen = len(record)
     columns = 0
 
@@ -69,7 +70,7 @@ def numcolumns(filename, record, indicator):
                 pos += columnsize
             elif len(column) > 0 and columnsize > 0:
                 # error (columnsize bigger zero but not as big as expected)
-                sys.stderr.write("File: {0}: Error in column {1}!", filename, columns)
+                logging.warning("File: %s: Error in row %d, column %d!", filename, rownum, columns)
             else:
                 break
 

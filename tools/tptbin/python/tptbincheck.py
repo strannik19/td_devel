@@ -19,10 +19,11 @@
 import struct
 import sys
 import tptbin
+import logging
 import argparse
 
 if len(sys.argv) == 1:
-    sys.stderr.write("Filename(s) missing in command argument")
+    logging.error("Filename(s) missing in command argument")
     sys.exit(1)
 
 for filename in sys.argv[1:]:
@@ -30,37 +31,36 @@ for filename in sys.argv[1:]:
     try:
         f = open(filename, "rb")
     except IOError as e:
-        sys.stderr.write("File: {0}: I/O error({1}): {2}", filename, e.errno, e.strerror)
+        logging.warning("File: %s: I/O error(%d): %s", filename, e.errno, e.strerror)
         break
 
-    record = 0
     indicator = 2
-    oldnumcolumns = 0;
-    numrow = 0;
-    oldnumrow = 1;
+    oldnumcolumns = 0
+    numrow = 0
+    oldnumrow = 1
 
     while True:
         rowlen = tptbin.readrowlen(f)
     
         if rowlen > 0:
-            completerecord = tptbin.readrow(f, rowlen)
+            numrow += 1
+
+            completerecord = tptbin.readrow(f, rowlen, numrow)
             if (completerecord != False):
                 # read as much byte from file as recordlen in file defined
-                numcolumns = tptbin.numcolumns(filename, completerecord, indicator)
+                numcolumns = tptbin.numcolumns(filename, completerecord, indicator, numrow)
             else:
                 break
         else:
             break
 
-        if numrow == 0:
+        if numrow == 1:
             oldnumcolumns = numcolumns
 
-        numrow += 1
-
-        if oldnumcolumns != numcolumns and numrow > 0:
-            sys.stdout.write ("{0} .. {1}: {2}", oldnumrow, numrow - 1, oldnumcolumns)
+        if oldnumcolumns != numcolumns and numrow > 1:
+            print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow, oldnumcolumns)
             oldnumrow = numrow
 
-    print "{0} - {1}: {2}".format(oldnumrow, numrow, oldnumcolumns)
+    print "{0}: {1} - {2}: {3}".format (filename, oldnumrow, numrow, oldnumcolumns)
 
     f.close()
