@@ -61,8 +61,7 @@ for filename in args.FILE:
             numrow += 1
 
             completerecord = tptbin.readrow(f, rowlen, numrow)
-            if (completerecord != False):
-                # read as much byte from file as recordlen in file defined
+            if completerecord != False:
                 numcolumns = tptbin.numcolumns(filename, completerecord,
                                                indicator, numrow)
             else:
