@@ -26,3 +26,4 @@ Arguments are optional:
  -q | --quick = Quickscan (only first row per file)
  -h           = short help for invocation
 ```
+Omitting ```-i``` and ```-ni```, tptbincheck is trying first without Indictor. If no exact record has been found, try with Indicator.
