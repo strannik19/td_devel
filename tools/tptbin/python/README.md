@@ -14,3 +14,16 @@ No Carriage Return or alike is required.
 # tptbinrc.py
 
 Rowcount of TPT binary files. Output is like from `wc -l`
+
+# tptbincheck.py
+
+Try to determine number of columns per row per file.
+
+Arguments are optional:
+```
+ -i           = Include Null Indicator bytes (-i and -ni are mutually exclusive)
+ -ni          = No Null Indicator bytes (-ni and -i are mutually exclusive)
+ -q | --quick = Quickscan (only first row per file)
+ -h           = short help for invocation
+```
+Omitting ```-i``` and ```-ni```, tptbincheck is trying first without Indictor. If no exact record has been found, try with Indicator.

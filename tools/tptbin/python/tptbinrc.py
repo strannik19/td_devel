@@ -13,14 +13,16 @@
 # THIS SOFTWARE.
 #
 # It is appreciated, if any changes to the source code are reported
-# to the copyright holder.
+# to the creator of this software.
 #
 
 import struct
 import sys
+import tptbin
+import logging
 
 if len(sys.argv) == 1:
-    print "Missing file name(s)"
+    logging.error("Filename(s) missing in command argument")
     sys.exit(1)
 
 totalrowcount = 0
@@ -30,26 +32,21 @@ for filename in sys.argv[1:]:
     try:
         f = open(filename, "rb")
     except IOError as e:
-        print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        logging.warning("File: %s: I/O error(%d): %s", filename, e.errno, e.strerror)
         break
 
     rowcounter = 0
 
     while True:
-        try:
-            a = f.read(2)
-        except:
-            break
+        rowlen = tptbin.readrowlen(f)
+
+        if rowlen > 0:
+            rowcounter += 1
+            totalrowcount += 1
     
-        if len(a) == 2:
-            linesize = struct.unpack('H', a)[0]
+            completerecord = tptbin.readrow(f, rowlen, rowcounter)
         else:
             break
-
-        rowcounter += 1
-        totalrowcount += 1
-
-        completerecord = f.read(linesize)
 
     if len(sys.argv) > 2:
         print rowcounter, filename
