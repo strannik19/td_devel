@@ -22,8 +22,8 @@ Install_Linux_Environment_SLES11SP1
 ===================================
 If you are an Teradata Employee, then you know how to get those packages:
 
-* SLJM (AssetID: KA66947)
-* GCFR (AssetID: KA67919)
+* SLJM (AssetID: KA67919, click on Detailed Package)
+* GCFR (AssetIDs: Software: KA66947, Documentation: KA66948)
 
 If you don't know, what SLJM or GCFR is, then you don't need that package anyway.
 
