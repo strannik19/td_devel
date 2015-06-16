@@ -3,7 +3,7 @@ Idea
 The idea is, to have an empty (new) TMS for ETL purposes.
 With those two packages, you will get
 
-* git (version 2.4.2)
+* git (version 2.4.3)
 * subversion (version 1.8.13)
 * SLJM (version 2.12)
 * GCFR (ETL part) (version 1.1.1 including patch 20140703)
@@ -31,8 +31,8 @@ Install_TD_Developers_Package_SLES11SP1
 =======================================
 The main goal for this package is the installation of this packages:
 
-* git (version 2.4.2)
-* subversion (version 1.8.13)
+* git
+* subversion
 
 Also, there are some packages included, which are required by SLJM or GCFR!
 
@@ -48,19 +48,19 @@ You need to have an Account at Novel, to be able to download those official RPMs
 
 The following packages are available to download for free:
 
-* apr-1.5.1.tar.bz2 (http://artfiles.org/apache.org/apr/apr-1.5.2.tar.bz2)
+* apr-1.5.2.tar.bz2 (http://artfiles.org/apache.org/apr/apr-1.5.2.tar.bz2)
 * apr-util-1.5.4.tar.bz2 (https://apr.apache.org/download.cgi)
 * curl-7.40.0.tar.bz2 (http://curl.haxx.se/download.html)
 * DBD-ODBC-1.52.tar.gz (https://metacpan.org/pod/DBD::ODBC)
 * DBI-1.633.tar.gz (https://metacpan.org/pod/DBI)
 * ExtUtils-MakeMaker-7.04.tar.gz (https://metacpan.org/pod/ExtUtils::MakeMaker)
-* openssl-1.0.2a.tar.gz (https://www.openssl.org/source/)
+* openssl-1.0.2c.tar.gz (https://www.openssl.org/source/)
 * scons-local-2.3.4.tar.gz (http://www.scons.org/download.php)
 * serf-1.3.8.tar.bz2 (http://www.linuxfromscratch.org/blfs/view/svn/basicnet/serf.html)
 * sqlite-amalgamation-3080801.zip (http://www.sqlite.org/download.html)
-* Test-Simple-1.001006.tar.gz (http://search.cpan.org/dist/Test-Simple/lib/Test/Builder.pm)
+* Test-Simple-1.001014.tar.gz (http://search.cpan.org/dist/Test-Simple/lib/Test/Builder.pm)
 * subversion-1.8.13.tar.bz2 (https://subversion.apache.org/download/)
-* git-2.4.2.tar.gz (https://www.kernel.org/pub/software/scm/git/)
+* git-2.4.3.tar.gz (https://www.kernel.org/pub/software/scm/git/)
 
 The script "download.sh" will download exactly those versions for you. You will just need to get the
 official RPMs from Novell (or some other trusted source).
