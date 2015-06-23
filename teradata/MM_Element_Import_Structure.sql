@@ -1,17 +1,17 @@
 SELECT
-    TRIM(tablename) AS "DATA_STRUCTURE_NAME_DE5.0"
+    TRIM(TABLENAME) AS "DATA_STRUCTURE_NAME_DE5.0"
     ,TRIM(columnname) AS "DATA_ELEMENT_NAME"
     ,COALESCE(CommentString,'') AS "DATA_ELEMENT_DESC"
-    ,'' AS "CUSTOM_PROPERTY1_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY2_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY3_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY4_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY5_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY6_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY7_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY8_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY9_NAME_HERE"
-    ,'' AS "CUSTOM_PROPERTY10_NAME_HERE"
+    ,'' AS "LoadColumnName_TMM"
+    ,ROW_NUMBER() OVER (PARTITION BY databasename, TABLENAME ORDER BY columnid) AS "ColumnOrder_TMM"
+    ,'VARCHAR('||data_leng AS "StgType_TMM"
+    ,'' AS "SrcIType_TMM"
+    ,'' AS "TransformKey_TMM"
+    ,'' AS "SrcIPI_TMM"
+    ,'' AS "StgPI_TMM"
+    ,'' AS "CharacterSet_TMM"
+    ,'' AS "Nullable_TMM"
+    ,'' AS "NullBlank_TMM"
     ,TRIM((CASE
         WHEN columntype = 'CV' THEN 6
         WHEN columntype = 'CF' THEN 4
@@ -32,11 +32,11 @@ SELECT
         ELSE ''
      END)) AS "DATA_ELEMENT_PRECISION_INT"
     ,CAST(2 AS BYTEINT) AS "DATA_ELEMENT_TYPE_CD"
-    ,Nullable
-    ,ROW_NUMBER() OVER (PARTITION BY databasename, tablename ORDER BY columnid) AS "LOGICAL_SEQUENCE_NUMBER"
-    ,ROW_NUMBER() OVER (PARTITION BY databasename, tablename ORDER BY columnid) AS "PHYSICAL_SEQUENCE_NUMBER"
+    ,Nullable AS "NULL_OPTION_IND"
+    ,ROW_NUMBER() OVER (PARTITION BY databasename, TABLENAME ORDER BY columnid) AS "LOGICAL_SEQUENCE_NUMBER"
+    ,ROW_NUMBER() OVER (PARTITION BY databasename, TABLENAME ORDER BY columnid) AS "PHYSICAL_SEQUENCE_NUMBER"
     ,'' AS "PLACEHOLDER_TYPE_CD"
 FROM dbc.columnsv
-WHERE databasename = 'DEV1_T_STG'
-ORDER BY databasename, TableName, ColumnName
+WHERE databasename = 'GDEV1T_STG'
+ORDER BY databasename, TABLENAME, ColumnName
 ;
