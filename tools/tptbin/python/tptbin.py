@@ -25,13 +25,26 @@ def readrowlen (f):
         a = f.read(2)
     except:
         return (-1)
- 
+
     if len(a) == 2:
         rowlen = struct.unpack('H', a)[0]
+        if rowlen < 2:
+            return (-1)
+    elif len(a) == 0:
+        return (0)
     else:
         return (-1)
 
     return (rowlen)
+
+
+def readahead (f, rowlen):
+    completerow = f.read(rowlen)
+
+    if (len(completerow) != rowlen):
+        return (False)
+
+    return (True)
 
 
 def readrow (f, rowlen, numrow):

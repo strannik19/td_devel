@@ -32,7 +32,8 @@ for filename in sys.argv[1:]:
     try:
         f = open(filename, "rb")
     except IOError as e:
-        logging.warning("File: %s: I/O error(%d): %s", filename, e.errno, e.strerror)
+        logging.warning("File: %s: I/O error(%d): %s", filename, e.errno,
+                        e.strerror)
         break
 
     rowcounter = 0
@@ -40,12 +41,24 @@ for filename in sys.argv[1:]:
     while True:
         rowlen = tptbin.readrowlen(f)
 
-        if rowlen > 0:
+        if rowlen < 0:
             rowcounter += 1
             totalrowcount += 1
-    
-            completerecord = tptbin.readrow(f, rowlen, rowcounter)
-        else:
+
+            logging.warning("File: %s: Record: %d: Error in len!",
+                            filename, rowcounter)
+            break
+        elif rowlen > 0:
+            rowcounter += 1
+            totalrowcount += 1
+
+            if tptbin.readahead(f, rowlen) == False:
+                logging.warning("File: %s: Record: %d: Expected rowlen " \
+                                "and actually read rowlen don't match!",
+                                filename, rowcounter)
+                break
+
+        elif rowlen == 0:
             break
 
     if len(sys.argv) > 2:
