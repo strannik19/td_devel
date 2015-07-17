@@ -373,8 +373,8 @@ then
 fi
 scons_pwd=${PWD}
 cd $HOME/bin
-execute "scons" "13.rm_ln" "rm -f scons"
-execute "scons" "12.create_ln" "ln -s ${scons_pwd}/scons.py scons"
+execute "scons" "12.rm_ln" "rm -f scons"
+execute "scons" "13.create_ln" "ln -s ${scons_pwd}/scons.py scons"
 echo " done"
 cd ${mydir}/inst.${myinst}
 
