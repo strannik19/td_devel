@@ -2,17 +2,17 @@
 
 ###############################################################################
 #
-# Installation routine for SLJM, GCFR and (probably) required perl modules
-# (c) 2014 Teradata Corp, Andreas Wenzel
+# Installation routine for SLJM and GCFR
+# (c) 2015 Teradata Corp, Andreas Wenzel
 #
 # Requirements:
 # SUSE Linux Enterprise Server 11 Servicepack 1 (SLES11SP1)
 #
 # Tested on:
-#   TDExpress14.10_Sles11_40GB (can be downloaded for free)
+#   TDExpress15.00.02_Sles11_40GB (can be downloaded for free)
 #
 # Installs:
-#   GCFR 1.1.1 from 20140512 including patch from 20140703
+#   GCFR 1.2 from 2015030??????
 #   SLJM 2.12
 #
 # Manipulates the three Perl files for GCFR:
@@ -177,11 +177,11 @@ function check_unix_groups {
         echo "New Unix group ${INST_ENV} will be created!"
     fi
 
-    if [ $(cut -f1 -d\: /etc/group | grep -c "^${INST_ENV}_Delv$") -eq 1 ]
+    if [ $(cut -f1 -d\: /etc/group | grep -c "^${INST_ENV}_Delivery$") -eq 1 ]
     then
-        echo "Unix group ${INST_ENV}_Delv already exists. No change!"
+        echo "Unix group ${INST_ENV}_Delivery already exists. No change!"
     else
-        echo "New Unix group ${INST_ENV}_Delv will be created!"
+        echo "New Unix group ${INST_ENV}_Delivery will be created!"
     fi
 }
 
@@ -431,14 +431,14 @@ function installation_preparation {
             exit 11
         fi
     fi
-    if [ $(cut -f1 -d\: /etc/group | grep -c "^${INST_ENV}_Delv$") -eq 0 ]
+    if [ $(cut -f1 -d\: /etc/group | grep -c "^${INST_ENV}_Delivery$") -eq 0 ]
     then
-        groupadd ${INST_ENV}_Delv
+        groupadd ${INST_ENV}_Delivery
         if [ $? -eq 0 ]
         then
-            echo "Created new Unix group ${INST_ENV}_Delv"
+            echo "Created new Unix group ${INST_ENV}_Delivery"
         else
-            echo -e "Fatal Error while creating new Unix group ${INST_ENV}_Delv\n"
+            echo -e "Fatal Error while creating new Unix group ${INST_ENV}_Delivery\n"
             exit 12
         fi
     fi
@@ -583,7 +583,7 @@ set_special_privileges
 #
 while true
 do
-    echo -ne "\nFiles have been prepared in inst.${myinst}. Check in another windows.\n"
+    echo -ne "\nFiles have been prepared in inst.${myinst}. Check in another window.\n"
     echo "This is the last step now."
     echo -n "Do you want to install them in real install folders? (y/n) "
     read INPUT
