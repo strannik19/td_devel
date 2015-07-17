@@ -12,7 +12,7 @@
 #   TDExpress15.00.02_Sles11_40GB (can be downloaded for free)
 #
 # Installs:
-#   GCFR 1.2 from 2015030??????
+#   GCFR 1.2 from 20150429
 #   SLJM 2.12
 #
 # Manipulates the three Perl files for GCFR:
@@ -247,19 +247,12 @@ function compile_and_prepare_sljm {
 #
 function prepare_gcfr {
 
-    unzip -xo ../GCFR_V1.1.1_ETL_Work_20140512.zip >/dev/null 2>&1
+    unzip -xo ../GCFR_V1.2_ETL_Work_20150429.zip >/dev/null 2>&1
     if [ $? -ne 0 ]
     then
-        echo -e "Fatal Error while uncompressing GCFR_V1.1.1_ETL_Work_20140512.zip\n"
+        echo -e "Fatal Error while uncompressing GCFR_V1.2_ETL_Work_20150429.zip\n"
         exit 16
     fi
-    unzip -xo ../GCFR_Release_1.1.1_patch_20140703.zip >/dev/null 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo -e "Fatal Error while uncompressing GCFR_Release_1.1.1_patch_20140703.zip\n"
-        exit 17
-    fi
-    rm -rf GCFR_DDL_Code GCFR_V1.1.1_Metadata_Registration_Tool_20140703.zip GCFR_Software_Release_Note_For_Patch_20140703.pdf
     mv GCFR_ETL_Work/* "${INST_DWH_BASE#/}/${INST_ENV}"
     if [ $? -ne 0 ]
     then
