@@ -3,7 +3,7 @@ Idea
 The idea is, to have an empty (new) TMS for ETL purposes.
 With those two packages, you will get
 
-* git (version 2.4.5)
+* git (version 2.4.6)
 * subversion (version 1.8.13)
 * SLJM (version 2.12)
 * GCFR (ETL part) (version 1.1.1 including patch 20140703)

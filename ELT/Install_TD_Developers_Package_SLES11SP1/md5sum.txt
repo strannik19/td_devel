@@ -6,7 +6,7 @@ db7f57fd595e3e1c93c972307a88fa6e  Test-Simple-1.001014.tar.gz
 2202b18f269ad606d70e1864857ed93c  apr-util-1.5.4.tar.bz2
 fa84bcc120ee02bec604142c2f0569da  certGithub.pem
 8d30594212e65657a5c32030f0998fa9  curl-7.40.0.tar.bz2
-0083a528f0a85168ca7a59b3ca4190fc  git-2.4.5.tar.gz
+af7f48ebe09eef41504241d4a845610b  git-2.4.6.tar.gz
 e6d78f50b4c1df1f12cdea2569664d4d  libncurses6-5.6-90.55.x86_64.rpm
 79e3fae7e94d7a9f0aa77793bba54d19  ncurses-devel-5.6-90.55.x86_64.rpm
 8c8d81a9ae7005276e486702edbcd4b6  openssl-1.0.2c.tar.gz
