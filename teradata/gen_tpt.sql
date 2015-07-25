@@ -1,3 +1,22 @@
+-- #########################################################################
+--     gen_tpt.sql
+--     Copyright (C) 2015  Andreas Wenzel (https://github.com/awenny)
+--
+--     This program is free software: you can redistribute it and/or modify
+--     it under the terms of the GNU General Public License as published by
+--     the Free Software Foundation, either version 3 of the License, or
+--     (at your option) any later version.
+--
+--     This program is distributed in the hope that it will be useful,
+--     but WITHOUT ANY WARRANTY; without even the implied warranty of
+--     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--     GNU General Public License for more details.
+--
+--     You should have received a copy of the GNU General Public License
+--     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-- #########################################################################
+
+
 insert into TPT_Loader_Scripts (Table_Owner, Table_Name, POS1, POS2, TPT_Text)
 SELECT trim(databasename), trim(tablename), 0 (SMALLINT), 1 (SMALLINT), 'USING CHARACTER SET '||Character_Set (VARCHAR(300))  FROM dbc.tables JOIN TPT_Loader_Script_Owner on databasename=Table_Owner where TableKind = 'T'
 UNION ALL
