@@ -10,9 +10,6 @@ install.sh
 ==========
 The main part. Download all packages with required versions into same folder as this script.
 
-*Attention:* at some point, it looks like the installation hangs. The problem is, that the ODBC installation routine is
-asking for an ENTER. So simply hit ENTER, and it will be finished successfully shortly.
-
 md5sum.txt
 ==========
 Is for checking if all packages are available, and files are OK.
