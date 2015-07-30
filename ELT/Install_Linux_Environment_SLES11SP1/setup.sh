@@ -69,6 +69,7 @@ then
     exit 99
 fi
 
+
 #
 # Check if supported Linux Distribution and version
 #
@@ -164,6 +165,30 @@ function check_suse {
     fi
 }
 
+
+#
+# Check version of TTU
+# only required for installation of perl modules
+#
+function check_ttu_version {
+    for TTU_VER in 15.00 14.10 14.00 13.10 13.00
+    do
+        if [ -d "/opt/teradata/client/${TTU_VER}/odbc_64" ]
+        then
+            INST_ODBC_PATH="/opt/teradata/client/${TTU_VER}/odbc_64"
+            export ODBCINI="${INST_ODBC_PATH}/odbc.ini"
+            break
+        fi
+    done
+
+    if [ -z ${INST_ODBC_PATH} ]
+    then
+        echo -e "Could not find ODBC for Teradata or maybe not even TTU!\n"
+        exit 3
+    fi
+}
+
+
 #
 # Check integrity (md5sum) of source packages
 #
@@ -184,6 +209,7 @@ function check_file_integrity {
     fi
 }
 
+
 #
 # Check Linux/Unix group
 #
@@ -203,17 +229,20 @@ function check_unix_groups {
     fi
 }
 
+
 #
 # Check if file already exists in target, and create backup version if exists
 #
 function backup_existing_file {
     FROM_FILE=$1
-    if [ -f "/${FROM_FILE}" ]
+
+    if [ -f "${FROM_FILE}" ]
     then
-        cp -pR "/${FROM_FILE}" "${FROM_FILE}.${myinst}"
+        cp -pR "${FROM_FILE}" "${FROM_FILE#*/}.${myinst}"
         (( BACKUPS = BACKUPS + 1 ))
     fi
 }
+
 
 #
 # Compile and prepare SLJM in app folder from GCFR
@@ -260,6 +289,7 @@ function compile_and_prepare_sljm {
 
 }
 
+
 #
 # Unpack and prepare GCFR
 #
@@ -287,13 +317,15 @@ function prepare_gcfr {
     mkdir "${INST_DWH_BASE#/}/${INST_ENV}"/logon
 }
 
+
 #
 # Questions for the user
 #
 function ask_installation_questions {
     while true
     do
-        echo -ne "\nWhat is your existing SLJM/GCFR base folder (/DWH)? "
+        echo -e "\nWhat is your existing SLJM/GCFR base folder (/DWH)?"
+        echo -n "This folder should have permission 755: "
         read INPUT
         if [ -z ${INPUT} ]
         then
@@ -362,6 +394,7 @@ function installation_summary {
         echo "Environment folder ${INST_DWH_BASE}/${INST_ENV} will be created!"
     fi
     check_unix_groups
+    check_etc_profile
 
     while true
     do
@@ -376,6 +409,7 @@ function installation_summary {
         fi
     done
 }
+
 
 #
 # create Demo/Test SLJM job
@@ -416,6 +450,7 @@ function create_sljm_job {
         cd - >/dev/null
     }
 }
+
 
 #
 # Installation of SLJM/GCFR in temp install folder
@@ -472,7 +507,7 @@ function installation_preparation {
     fi
 
     # Create identical folder structure in temporary install dir
-    mkdir -p etc/profile.d etc/skel "${INST_DWH_BASE#/}/${INST_ENV}"
+    mkdir -p etc/profile.d "${INST_DWH_BASE#/}/${INST_ENV}"
 
     # Escape slashes for sed command
     export SED_INST_DWH_BASE=$(echo ${INST_DWH_BASE} | sed -e 's/[]\/$*.^|[]/\\&/g')
@@ -480,7 +515,6 @@ function installation_preparation {
 
     # Copy and eventually manipulate skripts to temporary install dir
     sed "s/INST_DWH_BASEDIR/${SED_INST_DWH_BASE}/" <../sljm/conf/etc/profile.d/sljm.sh >etc/profile.d/sljm.sh
-    cp -p ../sljm/conf/etc/skel/user_profile.txt etc/skel/.profile
     sed "s/INST_ODBC_LIB_PATH/${SED_INST_ODBC_PATH}/" <../sljm/conf/group_profile.txt >"${INST_DWH_BASE#/}/${INST_ENV}/.profile"
 
     # Copy customized scripts and additional GCFR wrapper for SLJM
@@ -490,7 +524,7 @@ function installation_preparation {
         if [ $? -ne 0 ]
         then
             echo -e "Fatal Error while copying scripts to app/bin\n"
-            exit 13
+            exit 14
         fi
     done
 }
@@ -507,8 +541,8 @@ function set_special_privileges {
     chmod    775           ${INST_DWH_BASE#/}/${INST_ENV}/{source_data,export_data}
     chmod    750           ${INST_DWH_BASE#/}/${INST_ENV}/scripts/*
     chmod    755           ${INST_DWH_BASE#/}/${INST_ENV}
-    chmod    a+r           etc/skel/.profile etc/profile.d/sljm.sh
-    chmod    o+rx          etc/skel etc/profile.d
+    chmod    a+r           etc/profile.d/sljm.sh
+    chmod    o+rx          etc/profile.d
     chmod    640           ${INST_DWH_BASE#/}/${INST_ENV}/sljm.env
     for FO in "${INST_DWH_BASE#/}/${INST_ENV}/jobs" "${INST_DWH_BASE#/}/${INST_ENV}/logs" \
               "${INST_DWH_BASE#/}/${INST_ENV}/source_data" "${INST_DWH_BASE#/}/${INST_ENV}/export_data"
@@ -517,6 +551,30 @@ function set_special_privileges {
         setfacl -dm g::rwx ${FO}
     done
     echo "This guarantees, newly created folders will be group writeable as well!"
+}
+
+
+#
+#
+#
+function check_etc_profile {
+    if [ $(grep -c "^ODBCINI" /etc/profile) -gt 0 ]
+    then
+        echo "/etc/profile need to get fixed because of ODBCINI variable error"
+    fi
+}
+
+
+#
+# Fix /etc/profile because incorrect set ODBCINI variable
+#
+function fix_etc_profile {
+    if [ $(grep -c "^ODBCINI" /etc/profile) -gt 0 ]
+    then
+        echo "/etc/profile will be fixed because of ODBCINI variable error"
+        cp -p /etc/profile etc/profile
+        grep -v "^ODBCINI" /etc/profile >etc/profile
+    fi
 }
 
 
@@ -557,8 +615,10 @@ cd inst.${myinst}
 # Create new root folder structure in temporary installation folder
 mkdir -p "${INST_DWH_BASE#/}/${INST_ENV}"
 
+check_ttu_version
 installation_preparation
 create_sljm_job
+fix_etc_profile
 
 #
 # Some manipulations on Perl files
@@ -611,10 +671,9 @@ done
 # Create backup for files which already exist in target
 #
 BACKUPS=0
-for FILE1 in $(find . \( -type f -o -type l \))
+for FILE in $(find . \( -type f -o -type l \))
 do
-    FILE=${FILE1#*/}
-    backup_existing_file "${FILE}"
+    backup_existing_file "/${FILE}"
 done
 
 #
@@ -667,4 +726,10 @@ then
 fi
 
 echo -e "\nInstallation of Environment ${INST_ENV} successful!"
-echo -e "Don't forget to create/assign users to that Environment with primary group!\n"
+echo -e "\nThe following steps are probably left to do:"
+echo "  .) Create/assign users to this environment with primary group!"
+echo "     Example of creating new users: useradd -c \"Test user for ${INST_ENV}\" -m -g ${INST_ENV} -G ${INST_ENV}_Delivery -s /bin/bash ${INST_ENV}_Test"
+echo "     Set a password: passwd ${INST_ENV}_Test"
+echo "  .) Modify file ${INST_DWH_BASE}/${INST_ENV}/sljm.env and set correct values"
+echo "  .) Modify file ${INST_ODBC_PATH}/odbc.ini and create DSN as described in GCFR Installation Guide"
+echo ""

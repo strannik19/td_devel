@@ -27,8 +27,7 @@
 # SUSE Linux Enterprise Server 11 Servicepack 1 (SLES11SP1)
 #
 # Tested on:
-#   TDExpress14.10_Sles11_40GB (can be downloaded for free)
-#   TDExpress15.00.01_Sles11_40GB (can be downloaded for free)
+#   TDExpress15.00.02_Sles11_40GB (can be downloaded for free)
 #
 # Installs:
 # Perl modules pre-packaged from SUSE (if not present):

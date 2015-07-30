@@ -11,3 +11,6 @@ else
     PERL5LIB=${DWH_DIR}/${GROUP}/app/bin:${PERL5LIB}
 fi
 export PERL5LIB
+
+ODBCINI=INST_ODBC_LIB_PATH/odbc.ini
+export ODBCINI
