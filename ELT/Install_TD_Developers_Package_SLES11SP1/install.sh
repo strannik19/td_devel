@@ -27,8 +27,7 @@
 # SUSE Linux Enterprise Server 11 Servicepack 1 (SLES11SP1)
 #
 # Tested on:
-#   TDExpress14.10_Sles11_40GB (can be downloaded for free)
-#   TDExpress15.00.01_Sles11_40GB (can be downloaded for free)
+#   TDExpress15.00.02_Sles11_40GB (can be downloaded for free)
 #
 # Installs:
 # Perl modules pre-packaged from SUSE (if not present):
@@ -46,7 +45,7 @@
 #   libncurses6-5.6-90.55.x86_64.rpm
 #   ncurses-devel-5.6-90.55.x86_64.rpm
 # Required Development applications (under /usr/local):
-#   openssl-1.0.2c.tar.gz
+#   openssl-1.0.2d.tar.gz
 #   apr-1.5.2.tar.bz2
 #   apr-util-1.5.4.tar.bz2
 #   scons-local-2.3.4.tar.gz (required only by serf-1.3.8.tar.bz2)
@@ -105,8 +104,8 @@ function execute {
         exit 1
     fi
     echo ${EXE} >${mydir}/inst.${myinst}/${PACKAGE}.${STEP}.log
-    eval ${EXE} 2>&1 | tee -a ${mydir}/inst.${myinst}/${PACKAGE}.${STEP}.log; RC=${PIPESTATUS[0]}
-    if [ $RC -ne 0 ]
+    eval echo "" | ${EXE} >>${mydir}/inst.${myinst}/${PACKAGE}.${STEP}.log 2>&1
+    if [ ${PIPESTATUS[1]} -ne 0 ]
     then
         echo "Error while executing package: ${PACKAGE} -> ${STEP} -> ${EXE}"
         exit ${ERRORCODE}
@@ -262,12 +261,14 @@ function install_perl_module_from_src {
     PERL_SOFT=$1
     PERL_OPT=$2
 
+    echo -n "Installing package ${PERL_SOFT} ..."
     execute "${PERL_SOFT%-*}" "10.unpack" "tar zxvf ${mydir}/${PERL_SOFT}"
     cd ${PERL_SOFT%.tar.gz}
     execute "${PERL_SOFT%-*}" "20.setown" "chown -R root:root ."
     execute "${PERL_SOFT%-*}" "30.configure" "perl Makefile.PL ${PERL_OPT}"
     execute "${PERL_SOFT%-*}" "40.compile" "make"
     execute "${PERL_SOFT%-*}" "50.install" "make install"
+    echo " done"
     cd ..
 }
 
@@ -310,10 +311,10 @@ function install_perl_modules {
         fi
     done
 
-    install_perl_module_from_src ExtUtils-MakeMaker-7.04.tar.gz >ExtUtils-MakeMaker-7.04.instlog
-    install_perl_module_from_src Test-Simple-1.001014.tar.gz >Test-Simple-1.001014.instlog
-    install_perl_module_from_src DBI-1.633.tar.gz >DBI-1.633.instlog
-    install_perl_module_from_src DBD-ODBC-1.52.tar.gz "-o ${INST_ODBC_PATH}" >DBD-ODBC-1.52.instlog
+    install_perl_module_from_src ExtUtils-MakeMaker-7.04.tar.gz
+    install_perl_module_from_src Test-Simple-1.001014.tar.gz
+    install_perl_module_from_src DBI-1.633.tar.gz
+    install_perl_module_from_src DBD-ODBC-1.52.tar.gz "-o ${INST_ODBC_PATH}"
 
     # Changing permissions because somehow, the installation folders don't have proper world permissions.
     # This is important. Otherwise, no regular user will be able to execute GCFR-Perl-Components
@@ -340,34 +341,41 @@ mkdir inst.${myinst}
 cd inst.${myinst}
 
 
-execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2c.tar.gz"
-cd openssl-1.0.2c
+echo -n "Installing package openssl ..."
+execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2d.tar.gz"
+cd openssl-1.0.2d
 execute "openssl" "20.setown" "chown -R root:root ."
 execute "openssl" "30.configure" "./config -shared"
 execute "openssl" "40.compile" "make"
 execute "openssl" "50.install" "make install"
 execute "openssl" "60.copycerts" "cp -pRv /etc/ssl/certs/* /usr/local/ssl/certs"
+echo " done"
 cd ..
 
 
+echo -n "Installing package apr ..."
 execute "apr" "10.unpack" "tar jxvf ${mydir}/apr-1.5.2.tar.bz2"
 cd apr-1.5.2
 execute "apr" "20.setown" "chown -R root:root ."
 execute "apr" "30.configure" "./configure"
 execute "apr" "40.compile" "make"
 execute "apr" "50.install" "make install"
+echo " done"
 cd ..
 
 
+echo -n "Installing package apr-util ..."
 execute "apr-util" "10.unpack" "tar jxvf ${mydir}/apr-util-1.5.4.tar.bz2"
 cd apr-util-1.5.4
 execute "apr-util" "20.setown" "chown -R root:root ."
 execute "apr-util" "30.configure" "./configure --with-apr=/usr/local/apr"
 execute "apr-util" "40.compile" "make"
 execute "apr-util" "50.install" "make install"
+echo " done"
 cd ..
 
 
+echo -n "Installing package scons ..."
 execute "scons" "01.mkdir" "mkdir scons"
 cd scons
 execute "scons" "10.unpack" "tar zxvf ${mydir}/scons-local-2.3.4.tar.gz"
@@ -382,19 +390,23 @@ then
 fi
 scons_pwd=${PWD}
 cd $HOME/bin
-execute "scons" "13.rm_ln" "rm -f scons"
-execute "scons" "12.create_ln" "ln -s ${scons_pwd}/scons.py scons"
+execute "scons" "12.rm_ln" "rm -f scons"
+execute "scons" "13.create_ln" "ln -s ${scons_pwd}/scons.py scons"
+echo " done"
 cd ${mydir}/inst.${myinst}
 
 
+echo -n "Installing package serf ..."
 execute "serf" "10.unpack" "tar jxvf ${mydir}/serf-1.3.8.tar.bz2"
 cd serf-1.3.8
 execute "serf" "20.setown" "chown -R root:root ."
 execute "serf" "40.compile" "scons APR=/usr/local/apr/ APU=/usr/local/apr OPENSSL=/usr/local/ssl"
 execute "serf" "50.install" "scons install"
+echo " done"
 cd ..
 
 
+echo -n "Installing package subversion ..."
 execute "subversion" "10.unpack" "tar jxvf ${mydir}/subversion-1.8.13.tar.bz2"
 execute "subversion" "11.unzipsqlite" "unzip -x ${mydir}/sqlite-amalgamation-3080801.zip"
 execute "subversion" "12.mvsqlite" "mv sqlite-amalgamation-3080801 subversion-1.8.13/sqlite-amalgamation"
@@ -403,9 +415,11 @@ execute "subversion" "20.setown" "chown -R root:root ."
 execute "subversion" "30.configure" "./configure --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr --with-serf=/usr/local"
 execute "subversion" "40.compile" "make"
 execute "subversion" "50.install" "make install"
+echo " done"
 cd ..
 
 
+echo -n "Installing package curl ..."
 execute "curl" "10.unpack" "tar jxvf ${mydir}/curl-7.40.0.tar.bz2"
 cd curl-7.40.0
 execute "curl" "20.setown" "chown -R root:root ."
@@ -414,19 +428,28 @@ execute "curl" "21.copycert" "cp -p ${mydir}/certGithub.pem /usr/local/ssl/certs
 execute "curl" "30.configure" "./configure --with-ssl=/usr/local/ssl --with-http --with-ftp --with-telnet --with-ca-bundle=/usr/local/ssl/certs/certGithub.pem"
 execute "curl" "40.compile" "make"
 execute "curl" "50.install" "make install"
+echo " done"
 cd ..
 
 
+echo -n "Installing package git ..."
 execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.4.6.tar.gz"
 cd git-2.4.6
 execute "git" "20.setown" "chown -R root:root ."
 execute "git" "30.configure" "./configure --with-curl=/usr/local"
 execute "git" "40.compile" "make"
 execute "git" "50.install" "make install"
+echo " done"
 cd ..
 
+echo -n "Installing package tack ..."
 execute "rpm_inst" "10.tack" "rpm -U ${mydir}/tack-5.6-90.55.x86_64.rpm"
+echo " done"
+
+
+echo -n "Installing package ncurses-devel ..."
 execute "rpm_inst" "10.ncurses-devel" "rpm -U ${mydir}/ncurses-devel-5.6-90.55.x86_64.rpm"
+echo " done"
 
 install_perl_modules
 
