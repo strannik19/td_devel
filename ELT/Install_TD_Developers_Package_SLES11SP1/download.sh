@@ -30,14 +30,14 @@ for DL in \
 	http://ftp.fau.de/apache/apr/apr-util-1.5.4.tar.bz2 \
 	http://curl.haxx.se/download/curl-7.40.0.tar.bz2 \
 	https://cpan.metacpan.org/authors/id/M/MJ/MJEVANS/DBD-ODBC-1.52.tar.gz \
-	https://cpan.metacpan.org/authors/id/T/TI/TIMB/DBI-1.633.tar.gz \
+	https://cpan.metacpan.org/authors/id/T/TI/TIMB/DBI-1.634.tar.gz \
 	https://cpan.metacpan.org/authors/id/B/BI/BINGOS/ExtUtils-MakeMaker-7.04.tar.gz \
-	https://www.kernel.org/pub/software/scm/git/git-2.4.6.tar.gz \
+	https://www.kernel.org/pub/software/scm/git/git-2.5.0.tar.gz \
 	ftp://ftp.openssl.org/source/openssl-1.0.2d.tar.gz \
 	http://prdownloads.sourceforge.net/scons/scons-local-2.3.4.tar.gz \
 	http://serf.googlecode.com/svn/src_releases/serf-1.3.8.tar.bz2 \
 	http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
-	http://mirror.synyx.de/apache/subversion/subversion-1.8.13.tar.bz2 \
+	http://apache.arvixe.com/subversion/subversion-1.9.0.tar.bz2 \
 	http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/Test-Simple-1.001014.tar.gz
 do
 	if [ "${DL#https://cpan.metacpan.org}" = "${DL}" ]

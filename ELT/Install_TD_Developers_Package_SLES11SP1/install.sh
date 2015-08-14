@@ -37,22 +37,22 @@
 #   perl-XML-Parser
 # Perl modules installed from source:
 #   ExtUtils-MakeMaker-7.04.tar.gz
-#   DBI-1.633.tar.gz
+#   DBI-1.634.tar.gz
 #   DBD-ODBC-1.52.tar.gz
 #   Test-Simple-1.001014.tar.gz
 # Other packages from SUSE (if not present):
-#   tack-5.6-90.55.x86_64.rpm
-#   libncurses6-5.6-90.55.x86_64.rpm
-#   ncurses-devel-5.6-90.55.x86_64.rpm
+#   tack-5.6-90.55.${myARCHITECTURE}.rpm
+#   libncurses6-5.6-90.55.${myARCHITECTURE}.rpm
+#   ncurses-devel-5.6-90.55.${myARCHITECTURE}.rpm
 # Required Development applications (under /usr/local):
 #   openssl-1.0.2d.tar.gz
 #   apr-1.5.2.tar.bz2
 #   apr-util-1.5.4.tar.bz2
 #   scons-local-2.3.4.tar.gz (required only by serf-1.3.8.tar.bz2)
 #   serf-1.3.8.tar.bz2
-#   subversion-1.8.13.tar.bz2 (including sqlite-amalgamation-3080801.zip)
+#   subversion-1.9.0.tar.bz2 (including sqlite-amalgamation-3080801.zip)
 #   curl-7.40.0.tar.bz2
-#   git-2.4.6.tar.gz
+#   git-2.5.0.tar.gz
 #
 ###############################################################################
 #
@@ -86,9 +86,21 @@ ERRORCODE=0
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/ssl/lib:${LD_LIBRARY_PATH}
 export LD_RUN_PATH=/usr/local/lib:/usr/local/ssl/lib
 
-REQUIRED_RPM_PERL_MODULES="libncurses6-5.6 perl-XML-NamespaceSupport perl-XML-SAX perl-XML-Simple perl-XML-Parser"
-UNINSTALL_RPM_PERL_MODULES="perl-DBI"
-REQUIRED_SRC_PERL_MODULES="ExtUtils-MakeMaker-7.04.tar.gz DBI-1.633.tar.gz DBD-ODBC-1.52.tar.gz"
+
+#
+# determine processor type base on available RPMs
+#
+function determine_architecture {
+    if [ $(ls -1 | grep "\.rpm$" | awk 'BEGIN {FS="."} {print $(NF-1)}' | sort -u | wc -l) -eq 1 ]
+    then
+        export myARCHITECTURE=$(ls -1 | grep "\.rpm$" | awk 'BEGIN {FS="."} {print $(NF-1)}' | sort -u)
+        echo "Found architecture (processor type) based on available RPMs: ${myARCHITECTURE}"
+    else
+        echo "Hmm, found RPMs from different processor types." >&2
+        echo "Aborting ..." >&2
+        exit 11
+    fi
+}
 
 
 #
@@ -223,8 +235,7 @@ function check_file_integrity {
             exit 2
         fi
     else
-        echo -e "Could not verify integrity of source packages!\n"
-        exit 2
+        echo -e "No md5sum.txt file available. Do not check integrity!\n"
     fi
 }
 
@@ -313,12 +324,12 @@ function install_perl_modules {
 
     install_perl_module_from_src ExtUtils-MakeMaker-7.04.tar.gz
     install_perl_module_from_src Test-Simple-1.001014.tar.gz
-    install_perl_module_from_src DBI-1.633.tar.gz
+    install_perl_module_from_src DBI-1.634.tar.gz
     install_perl_module_from_src DBD-ODBC-1.52.tar.gz "-o ${INST_ODBC_PATH}"
 
     # Changing permissions because somehow, the installation folders don't have proper world permissions.
     # This is important. Otherwise, no regular user will be able to execute GCFR-Perl-Components
-    find /usr/lib/perl5/site_perl/5.10.0/x86_64-linux-thread-multi/ -type d -exec chmod o+rx {} \;
+    find /usr/lib/perl5/site_perl/5.10.0/${myARCHITECTURE}-linux-thread-multi/ -type d -exec chmod o+rx {} \;
 
 }
 
@@ -326,6 +337,7 @@ function install_perl_modules {
 #
 # START here with the processing
 #
+determine_architecture
 check_suse
 check_file_integrity
 check_ttu_version
@@ -407,10 +419,10 @@ cd ..
 
 
 echo -n "Installing package subversion ..."
-execute "subversion" "10.unpack" "tar jxvf ${mydir}/subversion-1.8.13.tar.bz2"
+execute "subversion" "10.unpack" "tar jxvf ${mydir}/subversion-1.9.0.tar.bz2"
 execute "subversion" "11.unzipsqlite" "unzip -x ${mydir}/sqlite-amalgamation-3080801.zip"
-execute "subversion" "12.mvsqlite" "mv sqlite-amalgamation-3080801 subversion-1.8.13/sqlite-amalgamation"
-cd subversion-1.8.13
+execute "subversion" "12.mvsqlite" "mv sqlite-amalgamation-3080801 subversion-1.9.0/sqlite-amalgamation"
+cd subversion-1.9.0
 execute "subversion" "20.setown" "chown -R root:root ."
 execute "subversion" "30.configure" "./configure --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr --with-serf=/usr/local"
 execute "subversion" "40.compile" "make"
@@ -433,8 +445,8 @@ cd ..
 
 
 echo -n "Installing package git ..."
-execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.4.6.tar.gz"
-cd git-2.4.6
+execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.5.0.tar.gz"
+cd git-2.5.0
 execute "git" "20.setown" "chown -R root:root ."
 execute "git" "30.configure" "./configure --with-curl=/usr/local"
 execute "git" "40.compile" "make"
@@ -443,13 +455,31 @@ echo " done"
 cd ..
 
 echo -n "Installing package tack ..."
-execute "rpm_inst" "10.tack" "rpm -U ${mydir}/tack-5.6-90.55.x86_64.rpm"
-echo " done"
+if [ $(rpm -qa | grep -c tack) -eq 0 ]
+then
+    execute "rpm_inst" "10.tack" "rpm -U ${mydir}/tack-5.6-90.55.${myARCHITECTURE}.rpm"
+    echo " done"
+else
+    echo " does not need installation"
+fi
 
+echo -n "Installing package libncurses6 ..."
+if [ $(rpm -qa | grep -c libncurses6) -eq 0 ]
+then
+    execute "rpm_inst" "10.libncurses6" "rpm -U ${mydir}/libncurses6-5.6-90.55.${myARCHITECTURE}.rpm"
+    echo " done"
+else
+    echo " does not need installation"
+fi
 
 echo -n "Installing package ncurses-devel ..."
-execute "rpm_inst" "10.ncurses-devel" "rpm -U ${mydir}/ncurses-devel-5.6-90.55.x86_64.rpm"
-echo " done"
+if [ $(rpm -qa | grep -c ncurses-devel) -eq 0 ]
+then
+    execute "rpm_inst" "10.ncurses-devel" "rpm -U ${mydir}/ncurses-devel-5.6-90.55.${myARCHITECTURE}.rpm"
+    echo " done"
+else
+    echo " does not need installation"
+fi
 
 install_perl_modules
 
