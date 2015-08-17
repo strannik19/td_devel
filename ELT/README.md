@@ -51,3 +51,7 @@ official RPMs from Novell (or some other trusted source).
 
 After writing this document, some packages above might be outdated.
 I'll try to keep up with development. If anyone can support me with that, it would be highly appreciated.
+
+Training_Lab
+============
+The installation scripts provided for the GCFR Training Lab.
