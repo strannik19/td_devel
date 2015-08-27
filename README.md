@@ -14,7 +14,7 @@ With those two containing packages, you will get
 
 installed.
 
-The Linux Environment (folder separation for Develop, Test, Production, ...) will be set up. Run "setup.sh" for every Environment (free naming).
+The Linux Environment (folder separation for Develop, Test, Production, ...) will be set up.
 Unix groups and base environment for SLJM will be created (as well as /etc/skel prepared).
 
 The packages are not supposed to be installed on TPA nodes.

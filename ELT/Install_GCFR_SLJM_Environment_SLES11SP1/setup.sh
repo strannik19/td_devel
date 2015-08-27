@@ -586,7 +586,7 @@ echo "You will be asked some questions. Some are just yes or no, others are with
 echo "For yes/no, answers only (y, yes, n, no) are allowed!"
 echo "For real values, defaults maybe present in paranthesis!"
 echo "All required software packages dependant for SLJM and/or GCFR must have been"
-echo "installed with Package Install_TD_Developers_Package_SLES11SP1 or otherwise!"
+echo "installed before continuing!"
 
 #
 # Continue with important checks

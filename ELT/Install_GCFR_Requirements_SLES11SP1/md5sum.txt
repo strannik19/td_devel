@@ -1,0 +1,8 @@
+5f4eadbbb7f1ac6e77ab92276ccae573  DBD-ODBC-1.52.tar.gz
+4ad15a9c2cc9b68e3fe1f5cadf9cdb30  DBI-1.634.tar.gz
+c280fa6a0dfe1d21d6b42792c041ddf7  ExtUtils-MakeMaker-7.04.tar.gz
+db7f57fd595e3e1c93c972307a88fa6e  Test-Simple-1.001014.tar.gz
+bf83f80700db4ae0d8506ee32ece7852  perl-XML-NamespaceSupport-1.09-1.22.x86_64.rpm
+3075e7d31829ba311c0bfa20ab42ed14  perl-XML-Parser-2.36-1.18.x86_64.rpm
+427e2974d46e1fb80916068b6c25fcc2  perl-XML-SAX-0.96-2.7.x86_64.rpm
+49e5104df151638f53146d14f535da74  perl-XML-Simple-2.18-1.15.x86_64.rpm
