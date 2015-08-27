@@ -10,7 +10,7 @@ With those two containing packages, you will get
 * git
 * subversion
 * SLJM (version 2.12)
-* GCFR (ETL part) (version 1.1.1 including patch 20140703)
+* GCFR (ETL part) (version 1.2)
 
 installed.
 
