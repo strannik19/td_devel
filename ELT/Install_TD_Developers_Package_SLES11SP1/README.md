@@ -4,7 +4,7 @@ A selection of root certificates.
 
 download.sh
 ===========
-Downloads the mentioned versions from of (free) packages.
+Downloads the required versions of all (free) packages.
 
 install.sh
 ==========

@@ -1,6 +1,6 @@
 download.sh
 ===========
-Downloads the required versions from all free packages. Download of official SLES RPMs must still be done individually.
+Downloads the required versions of all free packages. Download of official SLES RPMs must still be done individually.
 
 install.sh
 ==========
