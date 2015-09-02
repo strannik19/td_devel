@@ -6,7 +6,7 @@ ELT
 ===
 The idea is, to have an empty (new) TMS for ELT purposes.
 
-With those two containing packages, you will get
+With those packages, you will get
 * git
 * subversion
 * SLJM (version 2.12)
