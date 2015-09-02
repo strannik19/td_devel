@@ -20,7 +20,7 @@ guarantee, that nothing happens!
 
 Install_GCFR_Requirements_SLES11SP1
 ===================================
-You need to have an Account at Novel, to be able to download those official RPMs for SLES11SP1:
+You need to have an Account at Novell, to be able to download those official RPMs for SLES11SP1:
 
 * perl-XML-NamespaceSupport-1.09-1.22.x86_64.rpm
 * perl-XML-Parser-2.36-1.18.x86_64.rpm
@@ -32,7 +32,7 @@ official RPMs from Novell (or some other trusted source).
 
 Install_SLJM_Requirements_SLES11SP1
 ===================================
-You need to have an Account at Novel, to be able to download those official RPMs for SLES11SP1:
+You need to have an Account at Novell, to be able to download those official RPMs for SLES11SP1:
 
 * tack-5.6-90.55.x86_64.rpm
 * libncurses6-5.6-90.55.x86_64.rpm
