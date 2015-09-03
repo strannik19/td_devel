@@ -22,6 +22,10 @@ They install new software and libraries (in /usr/local).
 
 I'm not providing software packages here. You need to get them on your own.
 
+GCFR
+====
+Helpful stuff for GCFR
+
 INMOD
 =====
 INMODs for TTU.
