@@ -42,7 +42,7 @@ Show target tables and show number of processes populating it!
 
 Check_Transform_KeyCol.ddl
 ==========================
-For all process_types of 23 and 24, count the number of key columns.
+For all processes with process_types of 23, 24 and 25, count the number of key columns.
 If the count is 0, then this process will fail.
 
 Check_Transform_Process_Type.ddl
