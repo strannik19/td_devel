@@ -2,6 +2,10 @@ GCFR
 ====
 Here are some views to help increase the quality and consistency of the development.
 
+arcmain_backup_db.sh
+====================
+Shellscript to quickly backup a certain database hierarchy with arcmain. The result will be compressed.
+
 cp_tab.pl
 =========
 Copy a table from one Teradata System to another using bteq/fastload.
