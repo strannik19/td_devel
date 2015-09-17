@@ -34,7 +34,7 @@ for DL in \
 	http://prdownloads.sourceforge.net/scons/scons-local-2.3.4.tar.gz \
 	http://serf.googlecode.com/svn/src_releases/serf-1.3.8.tar.bz2 \
 	http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
-	http://apache.arvixe.com/subversion/subversion-1.9.0.tar.bz2
+	http://apache.arvixe.com/subversion/subversion-1.9.1.tar.bz2
 do
 	if [ "${DL#https://cpan.metacpan.org}" = "${DL}" ]
 	then
