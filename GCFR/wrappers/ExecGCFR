@@ -1,86 +1,18 @@
 #!/usr/bin/ksh
-#ident "@(#)Bteq	1.14    06/06/15    @@"
-############################################################################
+
 #
-#  Filename    : Bteq
-#  Part of     : SLJM
-#  Type        : ksh
-#  Job         : 
+# This is a wrapper for GCFR processes, which connect to database only
+# without any tasks in the operating system.
 #
-#  -------------------------------------------------------------------------
-#  Purpose     : Teradata bteq wrapper
+# The connection to the database will be done by bteq and CLI
+# The invoked sql script will have the call procedure command (only one)
+# and the return code/text from this procedure execution is
+# evaluated. Because not all errors in GCFR end the stored procedure
+# with an error code. Some are finishing successful, but in fact they
+# raised an error internally, but don't return with an error code.
+# The return message from the stored procedure will indicate if the
+# execution was successful or not.
 #
-#  Comments    :
-#
-#  -------------------------------------------------------------------------
-#  DB-Version  : TERADATA V2R3
-#  UNIX-Version: System SVR4
-#
-#  -------------------------------------------------------------------------
-#  Author      : W. Dunkler
-#  Department  : Teradata PS
-#  Version     : 1.14
-#  Date        : 06/06/15
-#
-#  -------------------------------------------------------------------------
-#  This program is part of SLJM - a tool to load, unload, or otherwise 
-#  manipulate data in a Teradata DWH environment.
-#
-#  Copyright ©  1999, 2006    Wolfgang Dunkler, NCR Teradata Austria
-#
-#  License: You are free to use and adopt this program for your particular 
-#  purpose if you are a Teradata customer with a valid Teradata RDBMS license. 
-#  If you are a NCR Teradata employee you are free to use, copy, and distribute 
-#  this program to Teradata customers. If you are a NCR Teradata employee you 
-#  are also free to modify this program but, you must retain the above 
-#  copyright line, this license statement, and the disclaimer below.
-#
-#  Contact: Wolfgang.Dunkler@ncr.com
-#
-#  Disclaimer: SLJM is NOT a maintained NCR product. The software is provided 
-#  by the author 'as is' and any express or implied warranties, including, but 
-#  not limited to, the implied warranties of merchantability and fitness for a 
-#  particular purpose are disclaimed. In no event shall NCR or the author be 
-#  liable for any direct, indirect, incidental, special, exemplary, or 
-#  consequential damages (including, but not limited to, procurement of 
-#  substitute goods or services; loss of use, data, or profits; or business 
-#  interruption) however caused and on any theory of liability, whether in 
-#  contract, strict liability, or tort (including negligence or otherwise) 
-#  arising in any way out of the use of this software, even if advised of the 
-#  possibility of such damage.
-#  -------------------------------------------------------------------------
-#  History:
-#
-#  1.6    99/02/09 duwo 
-#    Header added; old out files saved as out1 and out2
-#
-#  1.7    99/04/09 duwo 
-#    bteq exit-codes > 2 passed to Sched
-#
-#  1.8    99/10/07 duwo 
-#    .set width 250 added
-#
-#  1.9    00/08/11 duwo 
-#    Variable naming changed
-#
-#  1.10   00/08/14 duwo 
-#    Header updated
-#
-#  1.11   01/06/28 duwo 
-#    'set retry off' added; potentail cause of transaktion inconsistency
-#
-#  1.12   01/06/28 duwo 
-#    Errorcode 2631 Severity 8 added (default: 0 !!!)
-#    Deadlock causes script abortion now
-#
-#  1.13   06/05/31 duwo 
-#    errorcode (2667,3526) severity 2 -> removed
-#    Error code meaning changed; no longer needed
-#
-#  1.14   06/06/18 duwo 
-#    Disclaimer added
-#
-############################################################################
 
 Err() {
 	echo "$*" >&2

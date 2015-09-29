@@ -1,6 +1,6 @@
 -- #########################################################################
 --     sp_gen_121_views.sql
---     Copyright (C) 2015  Andreas Wenzel (https://github.com/awenny)
+--     Copyright (C) 2015  Andreas Wenzel (https://github.com/tdawen)
 --
 --     This program is free software: you can redistribute it and/or modify
 --     it under the terms of the GNU General Public License as published by
