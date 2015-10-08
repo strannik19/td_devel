@@ -38,8 +38,8 @@ SELECT
         ELSE 0
      END AS TCE_in_Transform_KeyCol
     ,CASE
-        WHEN processes.process_type IN (24, 25) AND Column_Errors.Num_tech_col_type2 = 0 THEN 1
-        WHEN processes.process_type IN (23)     AND Column_Errors.Num_tech_col_type2 > 0 THEN 1
+        WHEN processes.process_type IN (24)     AND Column_Errors.Num_tech_col_type2 = 0 THEN 1
+        WHEN processes.process_type IN (23, 25) AND Column_Errors.Num_tech_col_type2 > 0 THEN 1
         ELSE 0
      END AS TCE_in_Process_Type
     ,CASE
