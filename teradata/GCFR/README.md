@@ -15,7 +15,7 @@ Show GCFR processes with information to identify errors in advance, which will l
 * Show number of columns in Input and Output Objects and Target Table. Equal numbers do not mean: no problem. The problem will be shown in other TCE columns
 * Check if missing column in Input Object is defined as NOT NULL with no default value in Target Table.
 * Check if Output Object has keys defined in GCFR_Transform_KeyCol if Process_Type 23, 24 or 25 and if they exist in Target Table.
-* Check if Input Object has column GCFR_Delta_Action_Code if Process_Type 24 or 25.
+* Check if Input Object has column GCFR_Delta_Action_Code if Process_Type 24.
 * Check if Target Table has columns start_ts and end_ts if Stream is Intraday.
 
 Important column description:
@@ -32,7 +32,7 @@ TCE_OUT_Target_Diff | Transform Column Error: the Column Names between Output Ob
 TCE_INP_OUT_Diff | Transform Column Error: the Column Names between Input and Output Objects do not match.
 TCE_in_Target | Transform Column Error: Target Column is defined as NOT NULL and has no default value and is missing in Input/Output Object. Or column exists in Input/Output Object but not in Target Table.
 TCE_in_Transform_KeyCol | Transform Column Error: no columns defined as Key in GCFR_Transform_KeyCol or defined Key does not exist as Column(s) in Target Table.
-TCE_in_Process_Type | Transform Column Error: Process_Type is defined as "Delta", but Column GCFR_Delta_Action_Code is missing in Input Object or Process_Type is defined as "Full" and Column GCFR_Delta_Action_Code exists in Input Object.
+TCE_in_Process_Type | Transform Column Error: Process_Type is defined as "Delta", but Column GCFR_Delta_Action_Code is missing in Input Object or Process_Type is defined as "Full" or "Transaction" and Column GCFR_Delta_Action_Code exists in Input Object.
 TCE_in_Tech_Columns | Transform Column Error: Too few GCFR Technical Columns depending on Stream-Cycle-Frequency-Code (at least 8 for Daily or longer, 10 for IntraDay).
 Sum_TCE | Summarize all TCE* columns to show errors (easy to order in result set), a number greater then zero will very likely cause an abort in the GCFR process.
 
