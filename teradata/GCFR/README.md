@@ -28,6 +28,12 @@ Target_Table_Found | Y=The Target Table has been found, N=The Target Table has n
 Num_INP_Object_Columns | Number of Data Columns in Input Object.
 Num_OUT_Object_Columns | Number of Data Columns in Output Object.
 Num_Target_Table_Columns | Number of Data Columns in Target Table.
+Num_of_System_Files_assigned | Number of System Files assigned to this process
+System_File_Status | OK = no problem, N/A = no applicable for this process type, Err = Error in (not) assigned files to process
+BKEY_Key_Set_Status | OK = no problem, N/A = no applicable for this process type, Err = No existing Key_Set_Id available in BKEY_Key_Set table
+BKEY_Domain_Status | OK = no problem, N/A = no applicable for this process type, Err = No existing Domain_Id available in BKEY_Domain table
+BMAP_Code_Set_Status | OK = no problem, N/A = no applicable for this process type, Err = No existing Code_Set_Id available in BMAP_Key_Set table
+BMAP_Domain_Status | OK = no problem, N/A = no applicable for this process type, Err = No existing Code_Domain available in BMAP_Domain table
 TCE_OUT_Target_Diff | Transform Column Error: the Column Names between Output Object and Target Table do not match.
 TCE_INP_OUT_Diff | Transform Column Error: the Column Names between Input and Output Objects do not match.
 TCE_in_Target | Transform Column Error: Target Column is defined as NOT NULL and has no default value and is missing in Input/Output Object. Or column exists in Input/Output Object but not in Target Table.
@@ -35,6 +41,7 @@ TCE_in_Transform_KeyCol | Transform Column Error: no columns defined as Key in G
 TCE_in_Process_Type | Transform Column Error: Process_Type is defined as "Delta", but Column GCFR_Delta_Action_Code is missing in Input Object or Process_Type is defined as "Full" or "Transaction" and Column GCFR_Delta_Action_Code exists in Input Object.
 TCE_in_Tech_Columns | Transform Column Error: Too few GCFR Technical Columns depending on Stream-Cycle-Frequency-Code (at least 8 for Daily or longer, 10 for IntraDay).
 Sum_TCE | Summarize all TCE* columns to show errors (easy to order in result set), a number greater then zero will very likely cause an abort in the GCFR process.
+Fail_Indicator | Summarize all TCE* columns plus File and BKEY/BMAP status, a value greater then zero will very likely cause an abort in the GCFR process
 
 Check_GCFR_TargetPopulation.ddl
 ===============================

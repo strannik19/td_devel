@@ -29,6 +29,32 @@ SELECT
     ,COALESCE(Column_Errors.Num_INP_Object_Columns, 0) AS Num_INP_Object_Columns
     ,COALESCE(Column_Errors.Num_OUT_Object_Columns, 0) AS Num_OUT_Object_Columns
     ,COALESCE(Column_Errors.Num_Target_Table_Columns, 0) AS Num_Target_Table_Columns
+    ,COALESCE(System_File.Num_of_System_Files, 0) AS Num_of_System_Files_assigned
+    ,CASE
+        WHEN processes.process_type IN (10, 11, 12, 13, 14, 16, 17, 18, 19, 20) AND System_File.Num_of_System_Files <> 1 THEN 'Err'
+        WHEN System_File.Num_of_System_Files IS NULL THEN 'N/A'
+        ELSE 'OK'
+     END AS System_File_Status
+    ,CASE
+        WHEN processes.process_type = 21 AND Key_Set.key_set_id IS NULL THEN 'Err'
+        WHEN processes.process_type <> 21 THEN 'N/A'
+        ELSE 'OK'
+     END AS BKEY_Key_Set_Status
+    ,CASE
+        WHEN processes.process_type = 21 AND Key_Domain.key_set_id IS NULL THEN 'Err'
+        WHEN processes.process_type <> 21 THEN 'N/A'
+        ELSE 'OK'
+     END AS BKEY_Domain_Status
+    ,CASE
+        WHEN processes.process_type = 22 AND Code_Set.code_set_id IS NULL THEN 'Err'
+        WHEN processes.process_type <> 22 THEN 'N/A'
+        ELSE 'OK'
+     END AS BMAP_Code_Set_Status
+    ,CASE
+        WHEN processes.process_type = 22 AND Code_Domain.code_set_id IS NULL THEN 'Err'
+        WHEN processes.process_type <> 22 THEN 'N/A'
+        ELSE 'OK'
+     END AS BMAP_Domain_Status
     ,Column_Errors.TCE_OUT_Target_Diff
     ,Column_Errors.TCE_INP_OUT_Diff
     ,Column_Errors.TCE_in_Target
@@ -48,6 +74,11 @@ SELECT
         ELSE 0
      END AS TCE_in_Tech_Columns
     ,Column_Errors.TCE_OUT_Target_Diff + Column_Errors.TCE_INP_OUT_Diff + Column_Errors.TCE_in_Target + TCE_in_Transform_KeyCol + TCE_in_Process_Type + TCE_in_Tech_Columns AS Sum_TCE
+    ,Sum_TCE + (CASE WHEN System_File_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
+             + (CASE WHEN BKEY_Key_Set_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
+             + (CASE WHEN BKEY_Domain_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
+             + (CASE WHEN BMAP_Code_Set_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
+             + (CASE WHEN BMAP_Domain_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end) AS Fail_Indicator
 
 FROM <GCFR_V>.gcfr_process AS processes
 
@@ -158,7 +189,7 @@ LEFT JOIN
                   FROM <GCFR_V>.gcfr_process AS y01
                   JOIN dbc.columnsv AS y02
                     ON y02.databasename = y01.In_DB_Name
-                   AND y02.tablename    = y01.In_Object_Name
+                   AND y02.TABLENAME    = y01.In_Object_Name
                  UNION
                 SELECT y03.process_name, y04.columnname
                       ,CAST((CASE
@@ -169,7 +200,7 @@ LEFT JOIN
                   FROM <GCFR_V>.gcfr_process AS y03
                   JOIN dbc.columnsv AS y04
                     ON y04.databasename = y03.Out_DB_Name
-                   AND y04.tablename    = y03.Out_Object_Name
+                   AND y04.TABLENAME    = y03.Out_Object_Name
                  UNION
                 SELECT y05.process_name, y06.columnname
                       ,CAST((CASE
@@ -180,7 +211,7 @@ LEFT JOIN
                   FROM <GCFR_V>.gcfr_process AS y05
                   JOIN dbc.columnsv AS y06
                     ON y06.databasename = y05.Target_TableDatabaseName
-                   AND y06.tablename    = y05.Target_TableName
+                   AND y06.TABLENAME    = y05.Target_TableName
                  UNION
                 SELECT y07.process_name, y08.key_column
                       ,CAST((CASE
@@ -197,17 +228,17 @@ LEFT JOIN
         
         LEFT JOIN dbc.columnsv AS INP_Object_Columns
           ON INP_Object_Columns.databasename = x01.In_DB_Name
-         AND INP_Object_Columns.tablename    = x01.In_Object_Name
+         AND INP_Object_Columns.TABLENAME    = x01.In_Object_Name
          AND INP_Object_Columns.columnname   = XXY.columnname
         
         LEFT JOIN dbc.columnsv AS OUT_Object_Columns
           ON OUT_Object_Columns.databasename = x01.Out_DB_Name
-         AND OUT_Object_Columns.tablename    = x01.Out_Object_Name
+         AND OUT_Object_Columns.TABLENAME    = x01.Out_Object_Name
          AND OUT_Object_Columns.columnname   = XXY.columnname
         
         LEFT JOIN dbc.columnsv AS Target_Table_Columns
           ON Target_Table_Columns.databasename = x01.Target_TableDatabaseName
-         AND Target_Table_Columns.tablename    = x01.Target_TableName
+         AND Target_Table_Columns.TABLENAME    = x01.Target_TableName
          AND Target_Table_Columns.columnname   = XXY.columnname
 
         LEFT JOIN <GCFR_V>.GCFR_Transform_KeyCol AS Transform_KeyCol
@@ -219,7 +250,31 @@ LEFT JOIN
     ) AS Column_Errors
 ON Column_Errors.process_name = processes.process_name
 
-WHERE processes.process_type <> 11
+LEFT JOIN
+    (
+        SELECT process_name, COUNT(*) AS Num_of_System_Files
+        FROM <GCFR_V>.GCFR_File_Process AS t01
+        JOIN <GCFR_V>.GCFR_System_File AS t02
+        ON t01.file_id = t02.file_id
+        GROUP BY 1
+    ) AS System_File
+ON System_File.process_name = processes.process_name
+
+LEFT JOIN <UTL_V>.BKEY_Key_Set AS Key_Set
+ON Key_Set.key_set_id = processes.key_set_id
+
+LEFT JOIN <UTL_V>.BKEY_Domain AS Key_Domain
+ON Key_Domain.key_set_id = processes.key_set_id
+AND Key_Domain.domain_id = processes.domain_id
+
+LEFT JOIN <UTL_V>.BMAP_Code_Set AS Code_Set
+ON Code_Set.code_set_id = processes.code_set_id
+
+LEFT JOIN <UTL_V>.BMAP_Domain AS Code_Domain
+ON Code_Domain.code_set_id = processes.code_set_id
+AND Code_Domain.domain_id = processes.domain_id
+
+WHERE processes.process_type IN (13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 29, 30, 32, 35, 40, 41, 42, 43, 44)
 ;
 
 comment on view <GCFR_V>.Check_GCFR_Processes is 'Show GCFR processes and extensively check and show inconsistencies';
@@ -243,10 +298,17 @@ comment on column <GCFR_V>.Check_GCFR_Processes.Target_Table_Found is 'Y=The Tar
 comment on column <GCFR_V>.Check_GCFR_Processes.Num_INP_Object_Columns is 'Number of Data Columns in Input Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.Num_OUT_Object_Columns is 'Number of Data Columns in Output Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.Num_Target_Table_Columns is 'Number of Data Columns in Target Table';
+comment on column <GCFR_V>.Check_GCFR_Processes.Num_of_System_Files_assigned is 'Number of System Files assigned to this process';
+comment on column <GCFR_V>.Check_GCFR_Processes.System_File_Status is 'OK = no problem, N/A = no applicable for this process type, Err = Error in (not) assigned files to process';
+comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Key_Set_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Key_Set_Id available in BKEY_Key_Set table';
+comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Domain_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Domain_Id available in BKEY_Domain table';
+comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Code_Set_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Code_Set_Id available in BMAP_Key_Set table';
+comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Domain_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Code_Domain available in BMAP_Domain table';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_OUT_Target_Diff is 'Transform Column Error: the columnames between Output Object and Target Table do not match';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_INP_OUT_Diff is 'Transform Column Error: the columnames between Input and Output Objects do not match';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Target is 'Transform Column Error: target column is defined as not null and has no default value and is missing in Output Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Transform_KeyCol is 'Transform Column Error: no Columns defined as Key in GCFR_Transform_KeyCol or defined Key does not exist as column in Target Table';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Process_Type is 'Transform Column Error: Process_Type is defined as delta, but missing column GCFR_Delta_Action_Code or vice versa';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Tech_Columns is 'Transform Column Error: Too few GCFR technical columns depending on Stream-Cycle-Frequency-Code';
-comment on column <GCFR_V>.Check_GCFR_Processes.Sum_TCE is 'Summarize all TCE* columns to show errors (easy to order in result set), a number greater then zero will very likely cause an abort in the GCFR process';
+comment on column <GCFR_V>.Check_GCFR_Processes.Sum_TCE is 'Summarize all TCE* columns to show errors (easy to order in result set), a value greater then zero will very likely cause an abort in the GCFR process';
+comment on column <GCFR_V>.Check_GCFR_Processes.Fail_Indicator is 'Summarize all TCE* columns plus File and BKEY/BMAP status, a value greater then zero will very likely cause an abort in the GCFR process';
