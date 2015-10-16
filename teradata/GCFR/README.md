@@ -50,6 +50,22 @@ Check_Transform_Process_Type.ddl
 Compares the defined process_type in GCFR_Process with the definition of the input view.
 Process_type 23 does not allow to have the column "GCFR_Delta_Action_Code", whilst process_type 24 requires this column to be runable.
 
+GCFR_UT_BKEY_Register_New
+=========================
+Stored procedure to register a new key set and also generate all required tables and views with one step.
+Only domains need to be registered additionally as usual.
+
+Parameter Name | Description
+-------------- | -----------
+iKey_Set_Id | Specify the Key_Set_Id here
+iDescription | A description for this new Key_Set_Id
+iTableDatabaseName | Databasename where Key_Set table will be created
+iViewDatabaseName | Databasename where Key_set view will be created
+iKey_Table_Name | Table name for Key_Set
+iBIGINT_Flag | If using BIGINT (1) or INTEGER (0)
+iIndividual_Next_Id_Table_Flag | not supported yet
+OMessage | Output message has multiple lines
+
 Gen_GCFR_Calls.ddl
 ==================
 This view generates a list of process executions for GCFR_Process table. Either to use in SLJM (with variables) or directly in SQL Assistant.
