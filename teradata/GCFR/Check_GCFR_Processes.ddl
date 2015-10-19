@@ -1,4 +1,7 @@
-﻿REPLACE VIEW <GCFR_V>.Check_GCFR_Processes AS
+﻿-- search and replace the following values to your naming
+-- <GCFR_V> = View database for GCFR metadata tables
+-- <UTL_V> = Utility view database for BMAP and BKEY tables
+REPLACE VIEW <GCFR_V>.Check_GCFR_Processes AS
 SELECT
     processes.Process_Name
     ,processes.Description AS Process_Description
@@ -31,6 +34,7 @@ SELECT
     ,COALESCE(Column_Errors.Num_Target_Table_Columns, 0) AS Num_Target_Table_Columns
     ,COALESCE(System_File.Num_of_System_Files, 0) AS Num_of_System_Files_assigned
     ,CASE
+        -- Check Files assigned to Processes (mandatory assignements only)
         WHEN processes.process_type IN (10, 11, 12, 13, 14, 16, 17, 18, 19, 20) AND System_File.Num_of_System_Files <> 1 THEN 'Err'
         WHEN System_File.Num_of_System_Files IS NULL THEN 'N/A'
         ELSE 'OK'
@@ -46,6 +50,15 @@ SELECT
         ELSE 'OK'
      END AS BKEY_Domain_Status
     ,CASE
+        WHEN processes.process_type = 21 AND BKEY_Key_Map_Table.databasename IS NULL THEN 'N'
+        WHEN processes.process_type <> 21 THEN 'N/A'
+        ELSE 'Y'
+     END AS BKEY_Key_Map_Table_Found
+    ,CASE
+        WHEN processes.process_type = 21 AND BKEY_Key_Map_Table.databasename IS NOT NULL AND BKEY_Key_Map_Table.tablekind = 'V' THEN 'View'
+        WHEN processes.process_type = 21 AND BKEY_Key_Map_Table.databasename IS NOT NULL AND BKEY_Key_Map_Table.tablekind IN ('T', 'O') THEN 'Table'
+     END AS BKEY_Key_Map_Table_Is_Type
+    ,CASE
         WHEN processes.process_type = 22 AND Code_Set.code_set_id IS NULL THEN 'Err'
         WHEN processes.process_type <> 22 THEN 'N/A'
         ELSE 'OK'
@@ -55,6 +68,15 @@ SELECT
         WHEN processes.process_type <> 22 THEN 'N/A'
         ELSE 'OK'
      END AS BMAP_Domain_Status
+    ,CASE
+        WHEN processes.process_type = 22 AND BMAP_Code_Map_Table.databasename IS NULL THEN 'N'
+        WHEN processes.process_type <> 22 THEN 'N/A'
+        ELSE 'Y'
+     END AS BMAP_Code_Map_Table_Found
+    ,CASE
+        WHEN processes.process_type = 22 AND BMAP_Code_Map_Table.databasename IS NOT NULL AND BMAP_Code_Map_Table.tablekind = 'V' THEN 'View'
+        WHEN processes.process_type = 22 AND BMAP_Code_Map_Table.databasename IS NOT NULL AND BMAP_Code_Map_Table.tablekind IN ('T', 'O') THEN 'Table'
+     END AS BMAP_Code_Map_Table_Is_Type
     ,Column_Errors.TCE_OUT_Target_Diff
     ,Column_Errors.TCE_INP_OUT_Diff
     ,Column_Errors.TCE_in_Target
@@ -74,11 +96,15 @@ SELECT
         ELSE 0
      END AS TCE_in_Tech_Columns
     ,Column_Errors.TCE_OUT_Target_Diff + Column_Errors.TCE_INP_OUT_Diff + Column_Errors.TCE_in_Target + TCE_in_Transform_KeyCol + TCE_in_Process_Type + TCE_in_Tech_Columns AS Sum_TCE
-    ,Sum_TCE + (CASE WHEN System_File_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
-             + (CASE WHEN BKEY_Key_Set_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
-             + (CASE WHEN BKEY_Domain_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
-             + (CASE WHEN BMAP_Code_Set_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end)
-             + (CASE WHEN BMAP_Domain_Status IN ('OK', 'N/A') THEN 0 ELSE 1 end) AS Fail_Indicator
+    ,Sum_TCE
+        + (CASE WHEN System_File_Status IN ('OK', 'N/A') THEN 0 ELSE 1 END)
+        + (CASE WHEN BKEY_Key_Set_Status IN ('OK', 'N/A') THEN 0 ELSE 1 END)
+        + (CASE WHEN BKEY_Domain_Status IN ('OK', 'N/A') THEN 0 ELSE 1 END)
+        + (CASE WHEN BKEY_Key_Map_Table_Found IN ('Y', 'N/A') THEN 0 ELSE 1 END)
+        + (CASE WHEN BMAP_Code_Set_Status IN ('OK', 'N/A') THEN 0 ELSE 1 END)
+        + (CASE WHEN BMAP_Domain_Status IN ('OK', 'N/A') THEN 0 ELSE 1 END)
+        + (CASE WHEN BMAP_Code_Map_Table_Found IN ('Y', 'N/A') THEN 0 ELSE 1 END)
+        AS Fail_Indicator
 
 FROM <GCFR_V>.gcfr_process AS processes
 
@@ -263,12 +289,28 @@ ON System_File.process_name = processes.process_name
 LEFT JOIN <UTL_V>.BKEY_Key_Set AS Key_Set
 ON Key_Set.key_set_id = processes.key_set_id
 
+LEFT JOIN
+    (
+        SELECT TRIM(databasename) AS databasename, TRIM(TABLENAME) AS TABLENAME, tablekind
+        FROM dbc.tablesv
+    ) AS BKEY_Key_Map_Table
+ON BKEY_Key_Map_Table.databasename = Key_Set.Key_Table_DB_Name
+AND BKEY_Key_Map_Table.TABLENAME = Key_Set.Key_Table_Name
+
 LEFT JOIN <UTL_V>.BKEY_Domain AS Key_Domain
 ON Key_Domain.key_set_id = processes.key_set_id
 AND Key_Domain.domain_id = processes.domain_id
 
 LEFT JOIN <UTL_V>.BMAP_Code_Set AS Code_Set
 ON Code_Set.code_set_id = processes.code_set_id
+
+LEFT JOIN
+    (
+        SELECT TRIM(databasename) AS databasename, TRIM(TABLENAME) AS TABLENAME, tablekind
+        FROM dbc.tablesv
+    ) AS BMAP_Code_Map_Table
+ON BMAP_Code_Map_Table.databasename = Code_Set.Map_Table_DB_Name
+AND BMAP_Code_Map_Table.TABLENAME = Code_Set.Map_Table_Name
 
 LEFT JOIN <UTL_V>.BMAP_Domain AS Code_Domain
 ON Code_Domain.code_set_id = processes.code_set_id
@@ -288,22 +330,26 @@ comment on column <GCFR_V>.Check_GCFR_Processes.System_Name is 'Source System Na
 comment on column <GCFR_V>.Check_GCFR_Processes.Source_System_Description is 'Source System Description from GCFR_System View';
 comment on column <GCFR_V>.Check_GCFR_Processes.In_DB_Name is 'In which Database is the Input Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.In_Object_Name is 'The name of the Input Object';
-comment on column <GCFR_V>.Check_GCFR_Processes.INP_Object_Found is 'Y=The Input Object has been found, N=The Input Object has not been found, N leads to an error in GCFR';
+comment on column <GCFR_V>.Check_GCFR_Processes.INP_Object_Found is 'Y = The Input Object has been found, N = The Input Object has not been found, N leads to an error in GCFR';
 comment on column <GCFR_V>.Check_GCFR_Processes.Out_DB_Name is 'In which Database is the Output Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.Out_Object_Name is 'The name of the Output Object';
-comment on column <GCFR_V>.Check_GCFR_Processes.OUT_Object_Found is 'Y=The Output Object has been found, N=The Output Object has not been found, N leads to an error in GCFR';
+comment on column <GCFR_V>.Check_GCFR_Processes.OUT_Object_Found is 'Y = The Output Object has been found, N = The Output Object has not been found, N leads to an error in GCFR';
 comment on column <GCFR_V>.Check_GCFR_Processes.Target_TableDatabaseName is 'In which Database is the Target Table';
 comment on column <GCFR_V>.Check_GCFR_Processes.Target_TableName is 'The name of the Target Table';
-comment on column <GCFR_V>.Check_GCFR_Processes.Target_Table_Found is 'Y=The Target Table has been found, N=The Target Table has not been found, N leads to an error in GCFR';
+comment on column <GCFR_V>.Check_GCFR_Processes.Target_Table_Found is 'Y = The Target Table has been found, N = The Target Table has not been found, N leads to an error in GCFR';
 comment on column <GCFR_V>.Check_GCFR_Processes.Num_INP_Object_Columns is 'Number of Data Columns in Input Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.Num_OUT_Object_Columns is 'Number of Data Columns in Output Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.Num_Target_Table_Columns is 'Number of Data Columns in Target Table';
 comment on column <GCFR_V>.Check_GCFR_Processes.Num_of_System_Files_assigned is 'Number of System Files assigned to this process';
-comment on column <GCFR_V>.Check_GCFR_Processes.System_File_Status is 'OK = no problem, N/A = no applicable for this process type, Err = Error in (not) assigned files to process';
-comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Key_Set_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Key_Set_Id available in BKEY_Key_Set table';
-comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Domain_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Domain_Id available in BKEY_Domain table';
-comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Code_Set_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Code_Set_Id available in BMAP_Key_Set table';
-comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Domain_Status is 'OK = no problem, N/A = no applicable for this process type, Err = No existing Code_Domain available in BMAP_Domain table';
+comment on column <GCFR_V>.Check_GCFR_Processes.System_File_Status is 'OK = no problem, N/A = not applicable for this process type, Err = Error in (not) assigned files to process';
+comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Key_Set_Status is 'OK = no problem, N/A = not applicable for this process type, Err = No existing Key_Set_Id available in BKEY_Key_Set table';
+comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Domain_Status is 'OK = no problem, N/A = not applicable for this process type, Err = No existing Domain_Id available in BKEY_Domain table';
+comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Key_Map_Table_Found is 'Y = The Key Map Table has been found, N = The Key Map Table has not been found, N/A = not applicable for this process type, N leads to an error in GCFR';
+comment on column <GCFR_V>.Check_GCFR_Processes.BKEY_Key_Map_Table_is_Type is 'Registered Key Map Table is of type (view or table)';
+comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Code_Set_Status is 'OK = no problem, N/A = not applicable for this process type, Err = No existing Code_Set_Id available in BMAP_Key_Set table';
+comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Domain_Status is 'OK = no problem, N/A = not applicable for this process type, Err = No existing Code_Domain available in BMAP_Domain table';
+comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Code_Map_Table_Found is 'Y = The Code Map Table has been found, N = The Code Map Table has not been found, N/A = not applicable for this process type, N leads to an error in GCFR';
+comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Code_Map_Table_is_Type is 'Registered Code Map Table is of type (view or table)';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_OUT_Target_Diff is 'Transform Column Error: the columnames between Output Object and Target Table do not match';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_INP_OUT_Diff is 'Transform Column Error: the columnames between Input and Output Objects do not match';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Target is 'Transform Column Error: target column is defined as not null and has no default value and is missing in Output Object';
