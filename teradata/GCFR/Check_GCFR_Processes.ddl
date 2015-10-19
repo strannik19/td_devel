@@ -11,22 +11,37 @@ SELECT
     ,processes.ctl_id
     ,source_system.system_name
     ,source_system.description AS Source_System_Description
+    ,CASE
+        WHEN Open_Stream_BusDate.processing_flag = 0 THEN 'Started'
+        WHEN Open_Stream_BusDate.processing_flag = 1 THEN 'Ended'
+        ELSE 'Err'
+     END AS Status_Stream_BusDate
+    ,CASE
+        WHEN Open_Stream.processing_flag = 0 THEN 'Started'
+        WHEN Open_Stream.processing_flag = 1 THEN 'Ended'
+        ELSE 'Err'
+     END AS Status_Stream
+    ,Open_Stream_BusDate.Business_Date
+    ,Open_Stream.Business_Date_Cycle_Start_TS
     ,processes.In_DB_Name
     ,processes.In_Object_Name
     ,CASE
-        WHEN Column_Errors.Num_INP_Object_Columns = 0 THEN 'N'
+        WHEN processes.process_type IN (16, 19, 21, 22, 23, 24, 25, 29, 30, 35) AND Column_Errors.Num_INP_Object_Columns = 0 THEN 'N'
+        WHEN processes.process_type NOT IN (16, 19, 21, 22, 23, 24, 25, 29, 30, 35) THEN 'N/A'
         ELSE 'Y'
      END AS INP_Object_Found
     ,processes.Out_DB_Name
     ,processes.Out_Object_Name
     ,CASE
-        WHEN Column_Errors.Num_OUT_Object_Columns = 0 THEN 'N'
+        WHEN processes.process_type IN (13, 14, 17, 18, 20, 21, 22, 23, 24, 25, 29, 30, 35, 40, 41, 42, 43, 44) AND Column_Errors.Num_OUT_Object_Columns = 0 THEN 'N'
+        WHEN processes.process_type NOT IN (13, 14, 17, 18, 20, 21, 22, 23, 24, 25, 29, 30, 35, 40, 41, 42, 43, 44) THEN 'N/A'
         ELSE 'Y'
      END AS OUT_Object_Found
     ,processes.Target_TableDatabaseName
     ,processes.Target_TableName
     ,CASE
-        WHEN Column_Errors.Num_Target_Table_Columns = 0 THEN 'N'
+        WHEN processes.process_type IN (13, 14, 17, 18, 20, 21, 22, 23, 24, 25, 29, 30, 35, 40, 41, 42, 43, 44) AND Column_Errors.Num_Target_Table_Columns = 0 THEN 'N'
+        WHEN processes.process_type NOT IN (13, 14, 17, 18, 20, 21, 22, 23, 24, 25, 29, 30, 35, 40, 41, 42, 43, 44) THEN 'N/A'
         ELSE 'Y'
      END AS Target_Table_Found
     ,COALESCE(Column_Errors.Num_INP_Object_Columns, 0) AS Num_INP_Object_Columns
@@ -316,6 +331,12 @@ LEFT JOIN <UTL_V>.BMAP_Domain AS Code_Domain
 ON Code_Domain.code_set_id = processes.code_set_id
 AND Code_Domain.domain_id = processes.domain_id
 
+LEFT JOIN <GCFR_V>.GCFR_Stream_Id AS Open_Stream
+ON Open_Stream.Stream_Key = processes.Stream_Key
+
+LEFT JOIN <GCFR_V>.GCFR_Stream_BusDate AS Open_Stream_BusDate
+ON Open_Stream_BusDate.Stream_Key = processes.Stream_Key
+
 WHERE processes.process_type IN (13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 29, 30, 32, 35, 40, 41, 42, 43, 44)
 ;
 
@@ -328,6 +349,10 @@ comment on column <GCFR_V>.Check_GCFR_Processes.Process_Type_Description is 'Pro
 comment on column <GCFR_V>.Check_GCFR_Processes.Ctl_Id is 'Source System ID from GCFR_Process View';
 comment on column <GCFR_V>.Check_GCFR_Processes.System_Name is 'Source System Name from GCFR_System View';
 comment on column <GCFR_V>.Check_GCFR_Processes.Source_System_Description is 'Source System Description from GCFR_System View';
+comment on column <GCFR_V>.Check_GCFR_Processes.Status_Stream_BusDate is 'Status of the BusinessDate for the Stream (Started, Ended)';
+comment on column <GCFR_V>.Check_GCFR_Processes.Status_Stream is 'Status of the Stream within the BusinessDate (Started, Ended)';
+comment on column <GCFR_V>.Check_GCFR_Processes.Business_Date is 'Current BusinessDate';
+comment on column <GCFR_V>.Check_GCFR_Processes.Business_Date_Cycle_Start_TS is 'Current Cycle Start';
 comment on column <GCFR_V>.Check_GCFR_Processes.In_DB_Name is 'In which Database is the Input Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.In_Object_Name is 'The name of the Input Object';
 comment on column <GCFR_V>.Check_GCFR_Processes.INP_Object_Found is 'Y = The Input Object has been found, N = The Input Object has not been found, N leads to an error in GCFR';

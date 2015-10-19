@@ -22,6 +22,10 @@ Important column description:
 
 Column Name | Description
 ----------- | -----------
+Status_Stream_BusDate | Status of the BusinessDate for the Stream (Started, Ended)
+Status_Stream | Status of the Stream within the BusinessDate (Started, Ended)
+Business_Date | Current BusinessDate
+Business_Date_Cycle_Start_TS | Current Cycle Start
 INP_Object_Found | Y = The Input Object has been found, N = The Input Object has not been found.
 OUT_Object_Found | Y = The Output Object has been found, N = The Output Object has not been found.
 Target_Table_Found | Y = The Target Table has been found, N = The Target Table has not been found.
