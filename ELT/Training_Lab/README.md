@@ -12,3 +12,11 @@ reset_Training_Lab.sh
 Shell script to reset the GCFR Training Lab environment back to start.
 
 Good if you messed up with it, and want to go back.
+
+change_process_name_limit.sh
+============================
+Script to change all scripts of GCFR to lift the limitation of short process_name and update_user!
+
+change_process_name_limit.test.sh
+=================================
+Script to change the Training Lab to test the changes of lifting the process_name and update_user limitation.
