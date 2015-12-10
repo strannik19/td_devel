@@ -29,8 +29,8 @@ for DL in \
 	http://ftp.fau.de/apache/apr/apr-1.5.2.tar.bz2 \
 	http://ftp.fau.de/apache/apr/apr-util-1.5.4.tar.bz2 \
 	http://curl.haxx.se/download/curl-7.40.0.tar.bz2 \
-	https://www.kernel.org/pub/software/scm/git/git-2.6.3.tar.gz \
-	ftp://ftp.openssl.org/source/openssl-1.0.2d.tar.gz \
+	https://www.kernel.org/pub/software/scm/git/git-2.6.4.tar.gz \
+	http://openssl.org/source/openssl-1.0.2e.tar.gz \
 	http://prdownloads.sourceforge.net/scons/scons-local-2.3.4.tar.gz \
 	http://serf.googlecode.com/svn/src_releases/serf-1.3.8.tar.bz2 \
 	http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
@@ -45,7 +45,6 @@ do
 
 	if [ $? -ne 0 ]
 	then
-
 		echo "Error downloading package $DL!"
 		if [ -z "${ERRORPACKAGES}" ]
 		then
@@ -53,9 +52,6 @@ do
 		else
 			ERRORPACKAGES="${ERRORPACKAGES} ${DL##*/}"
 		fi
-
-	else
-		md5sum "${DL##*/}" >> md5sum.txt
 	fi
 
 done

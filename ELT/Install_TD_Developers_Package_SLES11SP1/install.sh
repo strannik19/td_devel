@@ -28,18 +28,18 @@
 # SUSE Linux Enterprise Server 11 Servicepack 1 (SLES11SP1)
 #
 # Tested on:
-#   TDExpress15.00.02_Sles11_40GB (can be downloaded for free)
+#   TDExpress15.10.0.7_Sles11_40GB_vp (can be downloaded for free)
 #
 # Installs:
 # Required Development applications (under /usr/local):
-#   openssl-1.0.2d.tar.gz
+#   openssl-1.0.2e.tar.gz
 #   apr-1.5.2.tar.bz2
 #   apr-util-1.5.4.tar.bz2
 #   scons-local-2.3.4.tar.gz (required only by serf-1.3.8.tar.bz2)
 #   serf-1.3.8.tar.bz2
 #   subversion-1.9.2.tar.bz2 (including sqlite-amalgamation-3080801.zip)
 #   curl-7.40.0.tar.bz2
-#   git-2.6.3.tar.gz
+#   git-2.6.4.tar.gz
 #
 ###############################################################################
 #
@@ -219,8 +219,8 @@ cd inst.${myinst}
 
 
 echo -n "Installing package openssl ..."
-execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2d.tar.gz"
-cd openssl-1.0.2d
+execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2e.tar.gz"
+cd openssl-1.0.2e
 execute "openssl" "20.setown" "chown -R root:root ."
 execute "openssl" "30.configure" "./config -shared"
 execute "openssl" "40.compile" "make"
@@ -310,8 +310,8 @@ cd ..
 
 
 echo -n "Installing package git ..."
-execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.6.3.tar.gz"
-cd git-2.6.3
+execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.6.4.tar.gz"
+cd git-2.6.4
 execute "git" "20.setown" "chown -R root:root ."
 execute "git" "30.configure" "./configure --with-curl=/usr/local"
 execute "git" "40.compile" "make"
