@@ -3,8 +3,8 @@ Idea
 The idea is, to have an empty (new) TMS for ETL purposes.
 With those packages, you will get
 
-* git (version 2.6.4)
-* subversion (version 1.9.2)
+* git (version 2.7.0)
+* subversion (version 1.9.3)
 * SLJM (version 2.12)
 * GCFR (ETL part) (version 1.2)
 
