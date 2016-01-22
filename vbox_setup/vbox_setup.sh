@@ -37,6 +37,7 @@ Memory="2048"
 VRAM="64"
 ACPI="on"
 CPUs="2"
+HostNetDev="en3"
 
 #
 # Check if VirtualBox is installed
@@ -162,7 +163,7 @@ Exec SetMemory "modifyvm \"${VM_Name}\" --memory ${Memory} --vram ${VRAM} --acpi
 
 Exec SetCPUs "modifyvm \"${VM_Name}\" --cpus ${CPUs}"
 
-Exec SetNetwork "modifyvm \"${VM_Name}\" --nic1 bridged --nictype1 82540EM --cableconnected1 on --bridgeadapter1 en3"
+Exec SetNetwork "modifyvm \"${VM_Name}\" --nic1 bridged --nictype1 82540EM --cableconnected1 on --bridgeadapter1 ${HostNetDev}"
 
 Exec AddSCSI "storagectl \"${VM_Name}\" --name \"SCSI\" --add scsi"
 
