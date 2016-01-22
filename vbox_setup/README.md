@@ -61,8 +61,9 @@ It will do following tasks:
 After that, the tools "git" and "svn" can be used.
 
 # What to do now?
-1. Unzip the zip file (sometimes a 7z) into the folder with those scripts
-   (after you have cloned this repository into your local filesystem)
+1. Unzip the zip file (sometimes a 7z) of the original virtual machine into the
+   folder with those scripts (after you have cloned this repository into your
+   local filesystem)
 2. Modify the vbox_setup.sh script by changing the variables to your needs
 3. Goto the vbox_folder (or wherever your unzipped original VM and those
     scripts are located)
