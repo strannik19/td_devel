@@ -41,3 +41,8 @@ Tools to run against Teradata Databases.
 tools
 =====
 Some other small helpful tools with no database involvement.
+
+vbox_setup
+==========
+Prepared scripts to convert a VMware virtual machine to a VirtualBox virtual
+machine. Currently test only with TDExpress_15.10.0.7 from 13.11.2015.
