@@ -31,6 +31,7 @@ virtual machine. For managing the new virtual machine, the tool "VBoxManage"
 (comes usually together with VirtualBox) is used.
 
 It will do following tasks:
+
 1. Create a new virtual machine
 2. Copy the vmdk files into the new virtual machine folder
 3. Add those copied vmdk files to virtual machine
@@ -47,6 +48,7 @@ This is an automated way to install some additional (modern) tools helpful to
 developers.
 
 It will do following tasks:
+
 1. Download td_devel repository from my (tdawen) GitHub to get access to
    installation scripts for "Install_TD_Developers_Package_SLES11SP1"
 2. Unpack the downloaded zip file and change into above folder
