@@ -32,7 +32,7 @@
 #
 # Installs:
 # Required Development applications (under /usr/local):
-#   openssl-1.0.2e.tar.gz
+#   openssl-1.0.2f.tar.gz
 #   apr-1.5.2.tar.bz2
 #   apr-util-1.5.4.tar.bz2
 #   scons-local-2.3.4.tar.gz (required only by serf-1.3.8.tar.bz2)
@@ -219,8 +219,8 @@ cd inst.${myinst}
 
 
 echo -n "Installing package openssl ..."
-execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2e.tar.gz"
-cd openssl-1.0.2e
+execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2f.tar.gz"
+cd openssl-1.0.2f
 execute "openssl" "20.setown" "chown -R root:root ."
 execute "openssl" "30.configure" "./config -shared"
 execute "openssl" "40.compile" "make"
