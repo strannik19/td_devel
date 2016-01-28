@@ -31,7 +31,7 @@
 # for development set the parameters manually as variables
 VirtualBox_Image_Folder="${HOME}/VirtualBox VMs"
 VM_Name="TestMe"
-OriVMdir="TDExpress15.10.0.7_Sles11_40GB_vp" # Even, current folder can have vmdk files, give a name to use it for vm description
+OriVMdir="TDExpress15.10.0.7_Sles11_40GB_vp" # Even current folder can have vmdk files, give a name to use it for vm description
 OStype="Linux26_64"
 Memory="2048"
 VRAM="64"
@@ -144,11 +144,11 @@ fi
 if [ $(${VBoxM} list vms | grep -c "${VM_Name}") -eq 1 ]
 then
     # For development only
-    Exec DropVM "unregistervm --delete \"${VM_Name}\""
+    #Exec DropVM "unregistervm --delete \"${VM_Name}\""
 
     # After development enable those two command
-    #echo "Virtual Machine with this name already exists"
-    #exit 4
+    echo "Virtual Machine with this name already exists"
+    exit 4
 fi
 
 
@@ -304,7 +304,7 @@ fi
 
 echo -e "\n# Now we set the hostname of guest to VM name."
 ssh root@${GuestIP} "hostname ${VM_Name}"
-ssh root@${GuestIP} "sed -i 's/TD-EXPRESS/${VM_Name}/g' >/etc/HOSTNAME"
+ssh root@${GuestIP} "sed -i 's/TD-EXPRESS/${VM_Name}/g' /etc/HOSTNAME"
 ssh root@${GuestIP} "sed -i 's/TD-EXPRESS/${VM_Name}/g' /etc/hosts"
 
 
