@@ -38,7 +38,7 @@
 #   scons-local-2.3.4.tar.gz (required only by serf-1.3.8.tar.bz2)
 #   serf-1.3.8.tar.bz2
 #   subversion-1.9.3.tar.bz2 (including sqlite-amalgamation-3080801.zip)
-#   curl-7.40.0.tar.bz2
+#   curl-7.47.0.tar.bz2
 #   git-2.7.0.tar.gz
 #
 ###############################################################################
@@ -297,8 +297,8 @@ cd ..
 
 
 echo -n "Installing package curl ..."
-execute "curl" "10.unpack" "tar jxvf ${mydir}/curl-7.40.0.tar.bz2"
-cd curl-7.40.0
+execute "curl" "10.unpack" "tar jxvf ${mydir}/curl-7.47.0.tar.bz2"
+cd curl-7.47.0
 execute "curl" "20.setown" "chown -R root:root ."
 execute "curl" "21.copycert" "cp -p ${mydir}/certGithub.pem /usr/local/ssl/certs"
 #execute "curl" "30.configure" "./configure --with-ssl=/usr/local/ssl --with-http --with-ftp --with-telnet"

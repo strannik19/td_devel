@@ -28,7 +28,7 @@ ERRORPACKAGES=""
 for DL in \
     http://ftp.fau.de/apache/apr/apr-1.5.2.tar.bz2 \
     http://ftp.fau.de/apache/apr/apr-util-1.5.4.tar.bz2 \
-    http://curl.haxx.se/download/curl-7.40.0.tar.bz2 \
+    http://curl.haxx.se/download/curl-7.47.0.tar.bz2 \
     https://www.kernel.org/pub/software/scm/git/git-2.7.0.tar.gz \
     http://openssl.org/source/openssl-1.0.2f.tar.gz \
     http://prdownloads.sourceforge.net/scons/scons-local-2.3.4.tar.gz \
