@@ -30,7 +30,7 @@
 
 # for development set the parameters manually as variables
 VirtualBox_Image_Folder="${HOME}/VirtualBox VMs"
-VM_Name="TestMe2"
+VM_Name="TestMe"
 OriVMdir="TDExpress15.00.02_Sles11_40GB" # Even current folder can have vmdk files, give a name to use it for vm description
 OStype="Linux26_64"
 Memory="2048"
@@ -38,6 +38,8 @@ VRAM="64"
 ACPI="on"
 CPUs="2"
 HostNetDev="en0"
+NicType="82545EM"
+Network="bridged" # Only bridged currently supported by script
 
 #
 # Check if VirtualBox is installed
@@ -163,7 +165,10 @@ Exec SetMemory "modifyvm \"${VM_Name}\" --memory ${Memory} --vram ${VRAM} --acpi
 
 Exec SetCPUs "modifyvm \"${VM_Name}\" --cpus ${CPUs}"
 
-Exec SetNetwork "modifyvm \"${VM_Name}\" --nic1 bridged --nictype1 82540EM --cableconnected1 on --bridgeadapter1 ${HostNetDev}"
+if [ "${Network}" == "bridged" ]
+then
+    Exec SetNetwork "modifyvm \"${VM_Name}\" --nic1 ${Network} --nictype1 ${NicType} --cableconnected1 on --bridgeadapter1 ${HostNetDev}"
+fi
 
 Exec AddSCSI "storagectl \"${VM_Name}\" --name \"SCSI\" --add scsi"
 
