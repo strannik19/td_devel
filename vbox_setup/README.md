@@ -14,6 +14,7 @@ This is an early state of development, I have tested it only with
 - Apple Mac OS X El Capitan (10.11.2 and 10.11.3)
 - Oracle VirtualBox 5.0.12 and 5.0.14
 - TDExpress 15.10.0.7 from 13.11.2015
+- TDExpress 15.00.02 from 30.06.2015 (seeing currently some issues)
 
 So, please be cautious.
 
@@ -69,3 +70,5 @@ After that, the tools "git" and "svn" can be used.
     scripts are located)
 4. Start with `./vbox_setup.sh`
 5. Wait and watch :smiley:
+
+If you see issues, please get in contact with me, or create an issue.
