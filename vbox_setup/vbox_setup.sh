@@ -155,7 +155,7 @@ fi
 #
 # Start with setting up the Virtual Machine
 #
-Exec RegisterVM "createvm -name \"${VM_Name}\" --ostype ${OStype} --register --basefolder \"${VirtualBox_Image_Folder}/${VM_Name}\""
+Exec RegisterVM "createvm -name \"${VM_Name}\" --ostype ${OStype} --register --basefolder \"${VirtualBox_Image_Folder}\""
 
 Exec SetDescription "modifyvm \"${VM_Name}\" --description \"TDexpress migrated from VMware image (${OriVMname##*/})\""
 
