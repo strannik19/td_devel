@@ -359,9 +359,6 @@ ssh root@${GuestIP} "sed -i 's/TD-EXPRESS/${VM_Name}/g' /etc/HOSTNAME"
 ssh root@${GuestIP} "sed -i 's/TD-EXPRESS/${VM_Name}/g' /etc/hosts"
 
 
-# for development only here
-GuestIP=$(GetGuestIPaddress)
-
 if [ -s to_be_executed_in_guest.sh ]
 then
     echo -e "\n# So, now upload script to_be_executed_in_guest.sh to guest and execute it!"
