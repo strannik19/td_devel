@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ##########################################################################
 #    vbox_setup.sh
@@ -30,14 +30,14 @@
 
 # for development set the parameters manually as variables
 VirtualBox_Image_Folder="${HOME}/VirtualBox VMs"
-VM_Name="TestMe"
-OriVMdir="TDExpress15.10.0.7_Sles11_40GB_vp" # Even current folder can have vmdk files, give a name to use it for vm description
+VM_Name="TestMe2"
+OriVMdir="TDExpress15.00.02_Sles11_40GB" # Even current folder can have vmdk files, give a name to use it for vm description
 OStype="Linux26_64"
 Memory="2048"
 VRAM="64"
 ACPI="on"
 CPUs="2"
-HostNetDev="en3"
+HostNetDev="en0"
 
 #
 # Check if VirtualBox is installed
@@ -167,7 +167,7 @@ Exec SetNetwork "modifyvm \"${VM_Name}\" --nic1 bridged --nictype1 82540EM --cab
 
 Exec AddSCSI "storagectl \"${VM_Name}\" --name \"SCSI\" --add scsi"
 
-PortNO=0
+ScsiFile=()
 for File in ${OriVMdir}/*.vmdk
 do
     echo "#"
@@ -176,11 +176,57 @@ do
     cp -p ${File} "${VirtualBox_Image_Folder}/${VM_Name}"
     if [ $? -eq 0 ]
     then
-        Exec AddSCSI "storageattach \"${VM_Name}\" --storagectl \"SCSI\" --port ${PortNO} --type hdd --medium \"${VirtualBox_Image_Folder}/${VM_Name}/${File##*/}\""
-        (( PortNO = PortNO + 1 ))
+        ScsiFile+=(${File})
     else
         ErrorVM
     fi
+done
+
+echo "Now, we need to check and probably change the file order"
+newFiles=()
+numFiles=${#ScsiFile[@]}
+pos=0
+startFiles=(${ScsiFile[@]})
+while [ ${pos} -lt ${numFiles} ]
+do
+    (( fino = pos + 1 ))
+    j=1
+    unset myFiles
+    for i in ${!ScsiFile[@]}
+    do
+        printf "  [%d] %s\n" $j ${ScsiFile[$i]}
+        myFiles+=(${ScsiFile[$i]})
+        (( j = j + 1 ))
+    done
+
+    echo "Please give number for file ${fino}/${numFiles}. Hit ENTER without number if order"
+    echo -n "is correct (always confirm with enter): "
+    read A
+    if [ -z ${A} ]
+    then
+        for i in ${!ScsiFile[@]}
+        do
+            newFiles+=(${ScsiFile[$i]})
+        done
+        break
+    elif [[ ${A} -gt 0 && ${A} -lt ${j} ]]
+    then
+        (( B = A - 1 ))
+        newFiles+=(${myFiles[$B]})
+        unset myFiles[$B]
+        #ScsiFile[$i]=( "${ScsiFile[@]/$B}" )
+        (( pos = pos + 1 ))
+        echo ""
+    else
+        echo -e "Input \"${A}\" not allowed! Please repeat!\n"
+    fi
+    unset ScsiFile
+    ScsiFile=(${myFiles[@]})
+done
+
+for i in ${!newFiles[@]}
+do
+    Exec AddSCSI "storageattach \"${VM_Name}\" --storagectl \"SCSI\" --port ${i} --type hdd --medium \"${VirtualBox_Image_Folder}/${VM_Name}/${newFiles[$i]##*/}\""
 done
 
 #Exec StartVM "startvm --type headless \"${VM_Name}\""
