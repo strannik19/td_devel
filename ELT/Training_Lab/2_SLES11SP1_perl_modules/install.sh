@@ -425,6 +425,6 @@ prepare_etc_hosts
 fix_etc_profile
 
 echo "Required Perl Modules successfully installed!"
-echo "Command for odbc.ini: \"export ODBCINI=${ODBCINI}\""
+echo "Command for odbc.ini: \"export ODBCINI=\"${ODBCINI}\""
 
 exit 0
