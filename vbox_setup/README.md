@@ -65,7 +65,11 @@ After that, the tools "git" and "svn" can be used.
 1. Unzip the zip file (sometimes a 7z) of the original virtual machine into the
    folder with those scripts (after you have cloned this repository into your
    local filesystem)
-2. Modify the vbox_setup.sh script by changing the variables to your needs
+2. Modify the vbox_setup.sh script by changing the variables to your needs.
+_Unfortunately, the automatic setting with Airport network adapter does not
+properly work on Mac. A workaround is, to use the waiting time while the vmdk
+files get copied and go to VirtualBox tool and set the network parameters there
+manually._
 3. Goto the vbox_folder (or wherever your unzipped original VM and those
     scripts are located)
 4. Start with `./vbox_setup.sh`
