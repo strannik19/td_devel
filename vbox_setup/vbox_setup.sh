@@ -31,7 +31,11 @@
 # for development set the parameters manually as variables
 VirtualBox_Image_Folder="${HOME}/VirtualBox VMs"
 VM_Name="TestMe"
-OriVMdir="TDExpress15.00.02_Sles11_40GB" # Even current folder can have vmdk files, give a name to use it for vm description
+
+# Even current folder can have vmdk files, give a name to use it for vm description
+# For the VM description, only the part after the last slash is used.
+OriVMdir="${HOME}/Downloads/TDExpress15.00.02_Sles11_40GB"
+
 OStype="Linux26_64"
 Memory="2048"
 VRAM="64"
@@ -94,10 +98,10 @@ function GetGuestIPaddress() {
     then
         var1=$(${VBoxM} showvminfo "${VM_Name}" --machinereadable | grep macaddress1)
 
-        # Asdign macaddress1 the MAC address as a value
+        # Assign macaddress1 the MAC address as a value
         eval $var1
 
-        # assign m the MAC address in lower case
+        # Assign m the MAC address in lower case
         m=$(echo ${macaddress1} | tr '[A-Z]' '[a-z]')
 
         # This is the MAC address formatted with : and 0n translated into n
@@ -107,10 +111,11 @@ function GetGuestIPaddress() {
         IFS=$'\n'; for line in $(arp -a); do
         #  echo $line
             IFS=' ' read -a array <<< $line
-            ip=$(echo "${array[1]}" | tr "(" " " | tr ")" " ")
+            ip=$(echo "${array[1]}" | tr -d "(" | tr -d ")")
 
             if [ "$mymac" = "${array[3]}" ]; then
               echo "$ip" | tr -d ' '
+              break
             fi
         done
     fi
@@ -123,10 +128,10 @@ function GetGuestIPaddress() {
 if [ $(ls -1 ./*.vmdk 2>/dev/null | wc -l) -gt 0 ]
 then
     echo "Found vmdk files in current folder. Use this one."
-    OriVMname=${OriVMdir}
+    OriVMname=${OriVMdir##*/}
     OriVMdir="."
 else
-    OriVMname=${OriVMdir}
+    OriVMname=${OriVMdir##*/}
 fi
 
 
@@ -355,8 +360,10 @@ fi
 
 echo -e "\n# Now we set the hostname of guest to VM name."
 ssh root@${GuestIP} "hostname ${VM_Name}"
-ssh root@${GuestIP} "sed -i 's/TD-EXPRESS/${VM_Name}/g' /etc/HOSTNAME"
-ssh root@${GuestIP} "sed -i 's/TD-EXPRESS/${VM_Name}/g' /etc/hosts"
+ssh root@${GuestIP} "echo '${VM_Name}' >/etc/HOSTNAME"
+
+ssh root@${GuestIP} "mv /etc/hosts /etc/hosts.vbox_setup"
+ssh root@${GuestIP} "awk --assign=vm=${VM_Name} --assign=vmcop1=${VM_Name}cop1 '/^127.0.0.1/ {print \$0, vm, vmcop1; next} {print}' </etc/hosts.vbox_setup >/etc/hosts"
 
 
 if [ -s to_be_executed_in_guest.sh ]
