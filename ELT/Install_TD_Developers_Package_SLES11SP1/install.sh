@@ -40,6 +40,7 @@
 #   subversion-1.9.3.tar.bz2 (including sqlite-amalgamation-3080801.zip)
 #   curl-7.47.0.tar.bz2
 #   git-2.7.2.tar.gz
+#   Python-3.5.1.tgz
 #
 ###############################################################################
 #
@@ -283,19 +284,6 @@ echo " done"
 cd ..
 
 
-echo -n "Installing package subversion ..."
-execute "subversion" "10.unpack" "tar jxvf ${mydir}/subversion-1.9.3.tar.bz2"
-execute "subversion" "11.unzipsqlite" "unzip -x ${mydir}/sqlite-amalgamation-3080801.zip"
-execute "subversion" "12.mvsqlite" "mv sqlite-amalgamation-3080801 subversion-1.9.3/sqlite-amalgamation"
-cd subversion-1.9.3
-execute "subversion" "20.setown" "chown -R root:root ."
-execute "subversion" "30.configure" "./configure --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr --with-serf=/usr/local"
-execute "subversion" "40.compile" "make"
-execute "subversion" "50.install" "make install"
-echo " done"
-cd ..
-
-
 echo -n "Installing package curl ..."
 execute "curl" "10.unpack" "tar jxvf ${mydir}/curl-7.47.0.tar.bz2"
 cd curl-7.47.0
@@ -305,6 +293,19 @@ execute "curl" "21.copycert" "cp -p ${mydir}/certGithub.pem /usr/local/ssl/certs
 execute "curl" "30.configure" "./configure --with-ssl=/usr/local/ssl --with-http --with-ftp --with-telnet --with-ca-bundle=/usr/local/ssl/certs/certGithub.pem"
 execute "curl" "40.compile" "make"
 execute "curl" "50.install" "make install"
+echo " done"
+cd ..
+
+
+echo -n "Installing package subversion ..."
+execute "subversion" "10.unpack" "tar jxvf ${mydir}/subversion-1.9.3.tar.bz2"
+execute "subversion" "11.unzipsqlite" "unzip -x ${mydir}/sqlite-amalgamation-3080801.zip"
+execute "subversion" "12.mvsqlite" "mv sqlite-amalgamation-3080801 subversion-1.9.3/sqlite-amalgamation"
+cd subversion-1.9.3
+execute "subversion" "20.setown" "chown -R root:root ."
+execute "subversion" "30.configure" "./configure --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr --with-serf=/usr/local"
+execute "subversion" "40.compile" "make"
+execute "subversion" "50.install" "make install"
 echo " done"
 cd ..
 
@@ -319,4 +320,22 @@ execute "git" "50.install" "make install"
 echo " done"
 cd ..
 
+
+echo -n "Installing package Python3 ..."
+execute "Python" "10.unpack" "tar zxvf ${mydir}/Python-3.5.1.tgz"
+cd Python-3.5.1
+export CPPFLAGS="-I/usr/local/ssl/include/openssl"
+export LDFLAGS="-L/usr/local/ssl/lib"
+export LD_LIBRARY_PATH="/usr/local/ssl/lib:$LD_LIBRARY_PATH"
+execute "Python3" "20.setown" "chown -R root:root ."
+execute "Python3" "30.configure" "./configure"
+execute "Python3" "40.compile" "make"
+execute "Python3" "50.install" "make install"
+echo " done"
+cd ..
+
+
 echo "Teradata Developer's Package installed successfully!"
+echo "If you have an internet connection, you can install"
+echo "the Teradata python module with following command:"
+echo "pip3 install teradata"

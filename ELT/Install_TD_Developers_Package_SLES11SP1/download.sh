@@ -34,7 +34,8 @@ for DL in \
     http://prdownloads.sourceforge.net/scons/scons-local-2.3.4.tar.gz \
     http://serf.googlecode.com/svn/src_releases/serf-1.3.8.tar.bz2 \
     http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
-    http://archive.apache.org/dist/subversion/subversion-1.9.3.tar.bz2
+    http://archive.apache.org/dist/subversion/subversion-1.9.3.tar.bz2 \
+    https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz
 do
     wget "${DL}" -O "${DL##*/}"
     RC=$?
