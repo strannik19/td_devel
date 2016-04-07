@@ -1,20 +1,25 @@
 #!/bin/bash
 
 # This script is for resetting an aborted GCFR Training Lab run back to start
-# I requires everything prepared:
-#   Folders with Training Lab scripts
-#   Existing GCFR installation
+# It requires everything prepared:
+#   Existing GCFR database installation which will be dropped before recreation
+#   Existing GCFR ELT installation under /GCFR_Root
+#   Existing folder structure:
+#     /GCFR_Root                     => where the ETL component is installed
+#     $HOME/2_GCFR_Standard_Packages => the DDL package is already unzipped
+#                                       and prepared (logon, Token_repalcement_values.txt)
+#     $HOME/4_Objects_For_Exercises  => the folder from Training Lab
 
 # Check if start step specified
-if [ -z "$1" ] 
+if [ -z "$1" ]
 then
    StartStep=1
 else
    StartStep="$1"
 fi
 
-# Check is end step specified
-if [ -z "$2" ] 
+# Check if end step specified
+if [ -z "$2" ]
 then
    EndStep=9999
 else
