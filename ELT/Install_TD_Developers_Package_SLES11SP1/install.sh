@@ -39,7 +39,7 @@
 #   serf-1.3.8.tar.bz2
 #   subversion-1.9.3.tar.bz2 (including sqlite-amalgamation-3080801.zip)
 #   curl-7.47.0.tar.bz2
-#   git-2.7.4.tar.gz
+#   git-2.8.1.tar.gz
 #   Python-3.5.1.tgz
 #
 ###############################################################################
@@ -311,8 +311,8 @@ cd ..
 
 
 echo -n "Installing package git ..."
-execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.7.4.tar.gz"
-cd git-2.7.4
+execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.8.1.tar.gz"
+cd git-2.8.1
 execute "git" "20.setown" "chown -R root:root ."
 execute "git" "30.configure" "./configure --with-curl=/usr/local"
 execute "git" "40.compile" "make"
