@@ -66,5 +66,8 @@ then
     exit 0
 else
     echo "Error in downloading package(s): ${ERRORPACKAGES}"
+    echo "Hint: It turned out, that it is no longer possible to download"
+    echo "openssl with the default installation of SLES11SP1 because of"
+    echo "SSL issues. In such case, download it manually and copy it over!"
     exit 1
 fi
