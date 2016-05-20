@@ -28,28 +28,37 @@ import json
 import urllib2
 import base64
 import zlib
+import argparse
 
+parser = argparse.ArgumentParser(description='Connect to TD REST API and '
+                                 'retrieve a sample query')
+parser.add_argument("--username", "-u", nargs=1, required=True,
+                    help="Username to connect to database")
+parser.add_argument("--password", "-p", nargs=1, required=True,
+                    help="Password to connect with to database")
+parser.add_argument("--hostalias", "-a", nargs=1, required=True,
+                    help="REST alias for database connection")
+parser.add_argument("--resthost", "-r", nargs=1, required=True,
+                    help="Host name or ip for REST server")
+args = parser.parse_args()
 
-username = 'dbc'
-password = 'dbc'
-teradataDatabaseAlias = 'GCFR'
-RestHost = 'gcfrntmm'
 
 # HTTP
 # Connect to Teradata via REST
 
-url = 'http://' + RestHost + ':1080/tdrest/systems/' + teradataDatabaseAlias + '/queries'
+url = 'http://' + args.resthost[0] + ':1080/tdrest/systems/' + args.hostalias[0] + '/queries'
 
 
 # HTTPS
-#url = 'https://tdevm1500:1443/tdrest/systems/' + teradataDatabaseAlias + '/queries'
+#url = 'https://tdevm1500:1443/tdrest/systems/' + args["hostalias"] + '/queries'
 
 
 # Setup required HTTP headers
 headers={}
 headers['Content-Type'] = 'application/json'
 headers['Accept'] = 'application/vnd.com.teradata.rest-v1.0+json'
-headers['Authorization'] = "Basic %s" % base64.encodestring('%s:%s' % (username, password)).replace('\n', '');
+headers['Authorization'] = "Basic %s" % base64.encodestring('%s:%s' %
+                           (args.username[0], args.password[0])).replace('\n', '')
 
 
 # Uncomment to receive results gzip compressed.
