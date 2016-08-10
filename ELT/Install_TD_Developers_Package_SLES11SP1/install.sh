@@ -32,15 +32,15 @@
 #
 # Installs:
 # Required Development applications (under /usr/local):
-#   openssl-1.0.2f.tar.gz
+#   openssl-1.0.2g.tar.gz
 #   apr-1.5.2.tar.bz2
 #   apr-util-1.5.4.tar.bz2
 #   scons-local-2.3.4.tar.gz (required only by serf-1.3.8.tar.bz2)
 #   serf-1.3.8.tar.bz2
-#   subversion-1.9.3.tar.bz2 (including sqlite-amalgamation-3080801.zip)
+#   subversion-1.9.4.tar.bz2 (including sqlite-amalgamation-3080801.zip)
 #   curl-7.47.0.tar.bz2
-#   git-2.8.1.tar.gz
-#   Python-3.5.1.tgz
+#   git-2.9.2.tar.gz
+#   Python-3.5.2.tgz
 #
 ###############################################################################
 #
@@ -218,10 +218,25 @@ check_file_integrity
 mkdir inst.${myinst}
 cd inst.${myinst}
 
+echo -n "Checking locale settings ..."
+if [[ "${LANG}" = "" || "${LANG}" != "en_US.utf8" ]]
+then
+    echo -e " Locale settings are strange. Look:"
+    locale
+    echo "Changed to following setting, otherwise installation will fail!"
+    export LANG="en_US.utf8"
+    export LC_CTYPE="en_US.utf8"
+    locale
+    echo "It's recommended to add those two lines to your profile configuration"
+    echo 'export LANG="en_US.utf8"'
+    echo 'export LC_CTYPE="en_US.utf8"'
+else
+    echo " done"
+fi
 
 echo -n "Installing package openssl ..."
-execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2f.tar.gz"
-cd openssl-1.0.2f
+execute "openssl" "10.unpack" "tar zxvf ${mydir}/openssl-1.0.2g.tar.gz"
+cd openssl-1.0.2g
 execute "openssl" "20.setown" "chown -R root:root ."
 execute "openssl" "30.configure" "./config -shared"
 execute "openssl" "40.compile" "make"
@@ -298,10 +313,10 @@ cd ..
 
 
 echo -n "Installing package subversion ..."
-execute "subversion" "10.unpack" "tar jxvf ${mydir}/subversion-1.9.3.tar.bz2"
+execute "subversion" "10.unpack" "tar jxvf ${mydir}/subversion-1.9.4.tar.bz2"
 execute "subversion" "11.unzipsqlite" "unzip -x ${mydir}/sqlite-amalgamation-3080801.zip"
-execute "subversion" "12.mvsqlite" "mv sqlite-amalgamation-3080801 subversion-1.9.3/sqlite-amalgamation"
-cd subversion-1.9.3
+execute "subversion" "12.mvsqlite" "mv sqlite-amalgamation-3080801 subversion-1.9.4/sqlite-amalgamation"
+cd subversion-1.9.4
 execute "subversion" "20.setown" "chown -R root:root ."
 execute "subversion" "30.configure" "./configure --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr --with-serf=/usr/local"
 execute "subversion" "40.compile" "make"
@@ -311,8 +326,8 @@ cd ..
 
 
 echo -n "Installing package git ..."
-execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.8.1.tar.gz"
-cd git-2.8.1
+execute "git" "10.unpack" "tar zxvf ${mydir}/git-2.9.2.tar.gz"
+cd git-2.9.2
 execute "git" "20.setown" "chown -R root:root ."
 execute "git" "30.configure" "./configure --with-curl=/usr/local"
 execute "git" "40.compile" "make"
@@ -322,8 +337,8 @@ cd ..
 
 
 echo -n "Installing package Python3 ..."
-execute "Python" "10.unpack" "tar zxvf ${mydir}/Python-3.5.1.tgz"
-cd Python-3.5.1
+execute "Python" "10.unpack" "tar zxvf ${mydir}/Python-3.5.2.tgz"
+cd Python-3.5.2
 export CPPFLAGS="-I/usr/local/ssl/include/openssl"
 export LDFLAGS="-L/usr/local/ssl/lib"
 export LD_LIBRARY_PATH="/usr/local/ssl/lib:$LD_LIBRARY_PATH"

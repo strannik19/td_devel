@@ -29,13 +29,13 @@ for DL in \
     http://ftp.fau.de/apache/apr/apr-1.5.2.tar.bz2 \
     http://ftp.fau.de/apache/apr/apr-util-1.5.4.tar.bz2 \
     http://curl.haxx.se/download/curl-7.47.0.tar.bz2 \
-    https://www.kernel.org/pub/software/scm/git/git-2.8.1.tar.gz \
-    http://openssl.org/source/old/1.0.2/openssl-1.0.2f.tar.gz \
+    https://www.kernel.org/pub/software/scm/git/git-2.9.2.tar.gz \
+    ftp://ftp.openssl.org/source/old/1.0.2/openssl-1.0.2g.tar.gz \
     http://prdownloads.sourceforge.net/scons/scons-local-2.3.4.tar.gz \
-    http://serf.googlecode.com/svn/src_releases/serf-1.3.8.tar.bz2 \
+    https://archive.apache.org/dist/serf/serf-1.3.8.tar.bz2 \
     http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
-    http://archive.apache.org/dist/subversion/subversion-1.9.3.tar.bz2 \
-    https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz
+    http://archive.apache.org/dist/subversion/subversion-1.9.4.tar.bz2 \
+    https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz
 do
     wget "${DL}" -O "${DL##*/}"
     RC=$?
