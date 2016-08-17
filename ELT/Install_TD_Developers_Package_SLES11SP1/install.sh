@@ -350,7 +350,18 @@ echo " done"
 cd ..
 
 
+echo -n "Installing package Teradata module for Python3 ..."
+execute "TeradataPython" "10.unpack" "tar zxvf ${mydir}/teradata-15.10.0.17.tar.gz"
+cd teradata-15.10.0.17
+execute "TeradataPython" "20.setown" "chown -R root:root ."
+execute "TeradataPython" "50.install" "python3 setup.py install"
+echo " done"
+cd ..
+
+
 echo "Teradata Developer's Package installed successfully!"
-echo "If you have an internet connection, you can install"
-echo "the Teradata python module with following command:"
-echo "pip3 install teradata"
+echo "If you have an internet connection, you can do the following:"
+echo " - Keep Teradata python module up-to-date with:"
+echo "   pip3 install --upgrade teradata"
+echo " - You might also want to update pip itself with:"
+echo "   pip3 install --upgrade pip"

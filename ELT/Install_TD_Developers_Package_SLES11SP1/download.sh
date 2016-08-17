@@ -35,7 +35,8 @@ for DL in \
     https://archive.apache.org/dist/serf/serf-1.3.8.tar.bz2 \
     http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
     http://archive.apache.org/dist/subversion/subversion-1.9.4.tar.bz2 \
-    https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz
+    https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz \
+    https://pypi.python.org/packages/14/3d/9ef1c87b61b6be99858d556c4ba233d662e13e5c40f4e70a68625fa2e8a4/teradata-15.10.0.17.tar.gz
 do
     wget "${DL}" -O "${DL##*/}"
     RC=$?

@@ -7,4 +7,5 @@ f3c710c045cdee5fd114feb69feba7aa  openssl-1.0.2g.tar.gz
 2e4efe57ff28cb3202a112e90f0c2889  serf-1.3.8.tar.bz2
 b1cbcbd710bdfd762dc169f1676053b5  sqlite-amalgamation-3080801.zip
 29121a038f87641055a8183f49e9739f  subversion-1.9.4.tar.bz2
+ac2e2b5b1dc05edc755258c874b79416  teradata-15.10.0.17.tar.gz
 3fe8434643a78630c61c6464fe2e7e72  Python-3.5.2.tgz

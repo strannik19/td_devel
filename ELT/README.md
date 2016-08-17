@@ -53,8 +53,10 @@ The main goal for this package is the installation of this packages:
 
 * git
 * subversion
+* Python3
+* Teradata python module
 
-But both tools require some additional software installed from source before.
+But these tools require some additional software installed from source before.
 
 * apr
 * apr-util
