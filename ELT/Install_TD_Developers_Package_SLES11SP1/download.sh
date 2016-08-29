@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ##########################################################################
 #    download.sh
@@ -36,7 +36,7 @@ for DL in \
     http://www.sqlite.org/2015/sqlite-amalgamation-3080801.zip \
     http://archive.apache.org/dist/subversion/subversion-1.9.4.tar.bz2 \
     https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz \
-    https://pypi.python.org/packages/14/3d/9ef1c87b61b6be99858d556c4ba233d662e13e5c40f4e70a68625fa2e8a4/teradata-15.10.0.17.tar.gz
+    https://pypi.python.org/packages/f7/58/bdda9b521a280dea3894d56785fd92aa799ab43d6a7936c39997f6e49ae0/teradata-15.10.0.18.tar.gz
 do
     wget "${DL}" -O "${DL##*/}"
     RC=$?

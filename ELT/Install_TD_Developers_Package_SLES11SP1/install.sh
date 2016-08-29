@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ##########################################################################
 #    install.sh
@@ -41,6 +41,7 @@
 #   curl-7.47.0.tar.bz2
 #   git-2.9.3.tar.gz
 #   Python-3.5.2.tgz
+#   Teradata for Python 15.10.0.18
 #
 ###############################################################################
 #
@@ -351,8 +352,8 @@ cd ..
 
 
 echo -n "Installing package Teradata module for Python3 ..."
-execute "TeradataPython" "10.unpack" "tar zxvf ${mydir}/teradata-15.10.0.17.tar.gz"
-cd teradata-15.10.0.17
+execute "TeradataPython" "10.unpack" "tar zxvf ${mydir}/teradata-15.10.0.18.tar.gz"
+cd teradata-15.10.0.18
 execute "TeradataPython" "20.setown" "chown -R root:root ."
 execute "TeradataPython" "50.install" "python3 setup.py install"
 echo " done"
