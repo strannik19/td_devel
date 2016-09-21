@@ -28,41 +28,39 @@
 # In SQL it looks like:
 # select COMPLETE_ROW_FROM_FILE, count(*)
 # from FILE
-# group by COMPLETE_ROW_FROM_FILE
-# order by COMPLETE_ROW_FROM_FILE;
+# group by COMPLETE_ROW_FROM_FILE;
 #
 # With an additional summary line!
 #
 ################################################################################
 
-# Vorbelegung an Variablen
-my $len_s = 6;
+# Predefine variables with values
+my $len_s = 5;
 my $len_i = 0;
 my $sum = 0;
 
-# Zähle hier das File durch. Benutze dabei den Hash "%va"
+# Read stdin or file(s) and put every line into hash "%va"
 while (<>) {
 	chomp;
 	$va{$_}++;
+	$sum++;
 }
 
-# Ermittle die maximale Länge an ZEILE_VON_FILE bzw. Anzahl (count(*))
-# Dies könnte man in der oberen Schleife machen.
-# Aber, weil davon auszugehen ist, daß sehr viele Sätze (mitunter Millionen)
-# Eingang finden, und nur wenige am Schluß herauskommen, benutzen wir eine
-# eigene Schleife, die am Ergebnis arbeitet.
+# Save the maximum detected line length in $len_s
+# Save the maximum detected length of count number in $len_i
 foreach (keys %va) {
 	$len_s = length($_) if ($len_s < length($_));
 	$len_i = length($va{$_}) if ($len_i < length($va{$_}));
 }
 
-# Beziehe die Summenzeile in die Längenermittlung mit ein.
+# Also take length of total count into length consideration
+# This gives the number of digits the value in $sum requires
 $len_i = length($sum) if ($len_i < length($sum));
 
-# Hier werden die einzelnen ZEILE_VON_FILE plus Anzahl (count(*)) ausgegeben.
+# Now, print all elements of hash %va per line with number of occurrence
 foreach (keys %va) {
 	printf("%-${len_s}s %${len_i}i\n", $_, $va{$_});
 }
 
-# Und zum Schluß kommt noch die Summenzeile hin.
-printf("%+${len_s}s %-${len_i}i\n", "gesamt", $sum);
+# Now, print the total summary line
+printf("%+${len_s}s %-${len_i}i\n", "total", $sum);
