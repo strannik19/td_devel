@@ -198,7 +198,7 @@ LEFT JOIN
                 ) AS TCE_in_Target
             ,SUM(
                     (CASE
-                        WHEN x01.process_type IN (23,24,25) AND Transform_KeyCol.Key_column IS NOT NULL AND Target_Table_Columns.columnname IS NOT NULL AND OUT_Object_Columns.columnname IS NOT NULL THEN 0 -- OK
+                        WHEN x01.process_type IN (23,24,25) AND Transform_KeyCol.Key_column IS NOT NULL AND Target_Table_Columns.columnname IS NOT NULL AND OUT_Object_Columns.columnname IS NOT NULL AND Target_Table_Columns.Nullable = 'N' THEN 0 -- OK
                         WHEN x01.process_type IN (23,24,25) AND Transform_KeyCol.Key_column IS NULL THEN 0 -- OK
                         ELSE 1 -- Not OK
                      END)
@@ -217,7 +217,7 @@ LEFT JOIN
                 ) AS Num_tech_col_type2
 
         FROM <GCFR_V>.gcfr_process AS x01
-        
+
         JOIN
             (
                 -- generate list of all columns (INP, OUT, Target) related to that process
@@ -266,17 +266,17 @@ LEFT JOIN
                    AND y08.Out_Object_Name = y07.Out_Object_Name
             ) AS XXY
         ON x01.process_name = XXY.process_name
-        
+
         LEFT JOIN dbc.columnsv AS INP_Object_Columns
           ON INP_Object_Columns.databasename = x01.In_DB_Name
          AND INP_Object_Columns.TABLENAME    = x01.In_Object_Name
          AND INP_Object_Columns.columnname   = XXY.columnname
-        
+
         LEFT JOIN dbc.columnsv AS OUT_Object_Columns
           ON OUT_Object_Columns.databasename = x01.Out_DB_Name
          AND OUT_Object_Columns.TABLENAME    = x01.Out_Object_Name
          AND OUT_Object_Columns.columnname   = XXY.columnname
-        
+
         LEFT JOIN dbc.columnsv AS Target_Table_Columns
           ON Target_Table_Columns.databasename = x01.Target_TableDatabaseName
          AND Target_Table_Columns.TABLENAME    = x01.Target_TableName
@@ -378,7 +378,7 @@ comment on column <GCFR_V>.Check_GCFR_Processes.BMAP_Code_Map_Table_is_Type is '
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_OUT_Target_Diff is 'Transform Column Error: the columnames between Output Object and Target Table do not match';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_INP_OUT_Diff is 'Transform Column Error: the columnames between Input and Output Objects do not match';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Target is 'Transform Column Error: target column is defined as not null and has no default value and is missing in Output Object';
-comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Transform_KeyCol is 'Transform Column Error: no Columns defined as Key in GCFR_Transform_KeyCol or defined Key does not exist as column in Target Table';
+comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Transform_KeyCol is 'Transform Column Error: no Columns defined as Key in GCFR_Transform_KeyCol or defined Key does not exist as column in Target Table or column is NULLABLE in Target Table';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Process_Type is 'Transform Column Error: Process_Type is defined as delta, but missing column GCFR_Delta_Action_Code or vice versa';
 comment on column <GCFR_V>.Check_GCFR_Processes.TCE_in_Tech_Columns is 'Transform Column Error: Too few GCFR technical columns depending on Stream-Cycle-Frequency-Code';
 comment on column <GCFR_V>.Check_GCFR_Processes.Sum_TCE is 'Summarize all TCE* columns to show errors (easy to order in result set), a value greater then zero will very likely cause an abort in the GCFR process';
