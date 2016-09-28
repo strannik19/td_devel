@@ -50,6 +50,7 @@ TCE_in_Process_Type | Transform Column Error: Process_Type is defined as "Delta"
 TCE_in_Tech_Columns | Transform Column Error: Too few GCFR Technical Columns depending on Stream-Cycle-Frequency-Code (at least 8 for Daily or longer, 10 for IntraDay).
 Sum_TCE | Summarize all TCE* columns to show errors (easy to order in result set), a number greater then zero will very likely cause an abort in the GCFR process.
 Fail_Indicator | Summarize all TCE* columns plus File and BKEY/BMAP status, a value greater then zero will very likely cause an abort in the GCFR process.
+PI_Transform_KeyCol_Mismatch | Value greater than 0 means Target Table has column in PI which is not used as Transform_KeyCol (technically no error, but inefficient query)
 
 Check_GCFR_TargetPopulation.ddl
 ===============================
