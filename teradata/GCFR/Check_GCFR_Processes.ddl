@@ -302,7 +302,7 @@ LEFT JOIN
           ON Target_Table_PI_Columns.DatabaseName = x01.Target_TableDatabaseName
          AND Target_Table_PI_Columns.TableName    = x01.Target_TableName
          AND Target_Table_PI_Columns.ColumnName   = XXY.ColumnName
-         AND Target_Table_PI_Columns.IndexType    IN ('P', 'O')
+         AND Target_Table_PI_Columns.IndexType    IN ('P', 'Q')
 
         GROUP BY 1
     ) AS Column_Errors
